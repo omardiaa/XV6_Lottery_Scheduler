@@ -102,12 +102,11 @@ sys_halt(void)
 int
 sys_date(void)
 {
-	struct rtcdate *d;
-	if(argptr(0, (void*)&d, sizeof(struct rtcdate))<0)
-		return -1;
-	
-	cmostime(d);
-	return 0;	
+  struct rtcdate *d;
+  if(argptr(0, (void*)&d, sizeof(struct rtcdate))<0)
+    return -1;
+  cmostime(d);
+  return 0;	
 	
 }
 #endif
