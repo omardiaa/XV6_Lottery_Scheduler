@@ -149,6 +149,7 @@ allocproc(void)
   memset(p->context, 0, sizeof *p->context);
   p->context->eip = (uint)forkret;
 
+  p->start_ticks = ticks;
   return p;
 }
 
@@ -563,7 +564,9 @@ procdumpP2P3P4(struct proc *p, char *state_string)
 void
 procdumpP1(struct proc *p, char *state_string)
 {
-  cprintf("TODO for Project 1, delete this line and implement procdumpP1() in proc.c to print a row\n");
+  
+  cprintf("%d\t%s\t%s\t%d\t%d", p->pid, p->name,p->start_ticks/1000, *state_string,p->sz);
+
   return;
 }
 #endif
