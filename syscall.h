@@ -21,4 +21,5 @@
 #define SYS_mkdir   SYS_link+1
 #define SYS_close   SYS_mkdir+1
 #define SYS_halt    SYS_close+1
+#define SYS_date    SYS_halt+1
 // student system calls begin here. Follow the existing pattern.
