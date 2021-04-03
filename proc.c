@@ -565,7 +565,7 @@ void
 procdumpP1(struct proc *p, char *state_string)
 {
   
-  cprintf("%d\t%s\t\t%d\t%s\t%d\t", p->pid,p->name,p->start_ticks,state_string,p->sz);
+  cprintf("%d\t%s\t\t%d\t%s\t%d\t", p->pid,p->name,ticks-(p->start_ticks),state_string,p->sz);
 
   return;
 }
