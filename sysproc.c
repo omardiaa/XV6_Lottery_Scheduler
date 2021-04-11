@@ -42,7 +42,7 @@ sys_kill(void)
 int
 sys_getpid(void)
 {
-  return myproc->pid;
+  return myproc()->pid;
 }
 
 int
@@ -53,7 +53,7 @@ sys_sbrk(void)
 
   if(argint(0, &n) < 0)
     return -1;
-  addr = myproc->sz;
+  addr = myproc()->sz;
   if(growproc(n) < 0)
     return -1;
   return addr;
@@ -69,7 +69,7 @@ sys_sleep(void)
     return -1;
   ticks0 = ticks;
   while(ticks - ticks0 < n){
-    if(myproc->killed){
+    if(myproc()->killed){
       return -1;
     }
     sleep(&ticks, (struct spinlock *)0);
@@ -113,20 +113,20 @@ sys_date(void)
 int 
 sys_getuid(void)
 {
-  return myproc->uid;
+  return myproc()->uid;
 }
 int
 sys_getgid(void)
 {
-  return myproc->gid;
+  return myproc()->gid;
 }
 int
 sys_getppid(void)
 {
-  if(myproc->parent() == NULL){
-    return myproc->pid;    
+  if(myproc()->parent() == NULL){
+    return myproc()->pid;    
   }else{
-    return myproc->parent()->pid;
+    return myproc()->parent()->pid;
   }
 }
 int
@@ -137,7 +137,7 @@ sys_setuid(void)
     return -1;
   if(uid<0 || uid>32767)
     return -1;
-  myproc->uid = uid;
+  myproc()->uid = uid;
   return 0;
 }
 int
@@ -148,7 +148,7 @@ sys_setgid(void)
     return -1;
   if(gid<0 || gid>32767)
     return -1;
-  myproc->gid = gid;
+  myproc()->gid = gid;
   return 0;
 }
 
