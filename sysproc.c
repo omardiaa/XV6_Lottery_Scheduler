@@ -123,10 +123,10 @@ sys_getgid(void)
 int
 sys_getppid(void)
 {
-  if(myproc()->parent() == NULL){
+  if(myproc()->parent == NULL){
     return myproc()->pid;    
   }else{
-    return myproc()->parent()->pid;
+    return myproc()->parent->pid;
   }
 }
 int
