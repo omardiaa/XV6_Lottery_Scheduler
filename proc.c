@@ -440,7 +440,7 @@ sched(void)
   swtch(&p->context, mycpu()->scheduler);
   mycpu()->intena = intena;
 #ifdef CS333_P2
-      p->cpu_ticks_total = ticks;
+      p->cpu_ticks_total += (ticks-p->cpu_ticks_in);
 #endif
 }
 
@@ -575,7 +575,7 @@ procdumpP2P3P4(struct proc *p, char *state_string)
    p->gid,
    p->parent==NULL?p->pid:p->parent->pid,
    (ticks-(p->start_ticks))/1000,(ticks-(p->start_ticks))%1000,
-   (p->cpu_ticks_total-p->cpu_ticks_in)/1000,(p->cpu_ticks_total-p->cpu_ticks_in)%1000,
+   (p->cpu_ticks_total)/1000,(p->cpu_ticks_total)%1000,
    state_string,
    p->sz);
    
