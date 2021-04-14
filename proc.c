@@ -396,6 +396,7 @@ scheduler(void)
       p->state = RUNNING;
 #ifdef CS333_P2
       p->cpu_ticks_in = ticks;
+      cprintf("%s: Started at %d\n",p->name,ticks);
 #endif
       swtch(&(c->scheduler), p->context);
       switchkvm();
@@ -441,6 +442,7 @@ sched(void)
   mycpu()->intena = intena;
 #ifdef CS333_P2
       p->cpu_ticks_total = ticks;
+      cprintf("%s: Ended at %d\n",p->name,ticks);
       cprintf("%s: Ticks In: %d, Ticks Total: %d, Difference: %d\n",p->name,p->cpu_ticks_in,p->cpu_ticks_total,p->cpu_ticks_total-p->cpu_ticks_in);
 #endif
 }
