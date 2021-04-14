@@ -568,9 +568,15 @@ void
 procdumpP2P3P4(struct proc *p, char *state_string)
 {
   //PID     Name         UID        GID     PPID    Elapsed CPU     State   Size     PCs
-  cprintf("%d\t%s\t%d\t%d\t%d\t%d\t%d\t%s\t%d\t",
-   p->pid,p->name,p->uid,p->gid,p->parent->pid,p->cpu_ticks_total-p->cpu_ticks_in,
-   p->state, p->sz);
+  cprintf("%d\t%s\t\t%d\t%d\t%d\t%d\t\t%s\t%d",
+   p->pid,
+   p->name,
+   p->uid,
+   p->gid,
+   p->parent==NULL?p->pid:p->parent->pid,
+   p->cpu_ticks_total-p->cpu_ticks_in,
+   state_string,
+   p->sz);
    
   return;
 }
