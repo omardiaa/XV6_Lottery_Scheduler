@@ -574,7 +574,7 @@ procdumpP2P3P4(struct proc *p, char *state_string)
    p->uid,
    p->gid,
    p->parent==NULL?p->pid:p->parent->pid,
-   (p->cpu_ticks_total-p->cpu_ticks_in)/1000,(p->cpu_ticks_total-p->cpu_ticks_in)%1000
+   (p->cpu_ticks_total-p->cpu_ticks_in)/1000,(p->cpu_ticks_total-p->cpu_ticks_in)%1000,
    state_string,
    p->sz);
    
