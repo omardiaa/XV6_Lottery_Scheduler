@@ -395,7 +395,7 @@ scheduler(void)
       switchuvm(p);
       p->state = RUNNING;
 #ifdef CS333_P2
-      p->cpu_ticks_in=p->cpu_ticks_in>0?p->cpu_ticks_in:ticks;
+      p->cpu_ticks_in=ticks;
 #endif
       swtch(&(c->scheduler), p->context);
       switchkvm();
@@ -440,7 +440,8 @@ sched(void)
   swtch(&p->context, mycpu()->scheduler);
   mycpu()->intena = intena;
 #ifdef CS333_P2
-      p->cpu_ticks_total += (ticks-p->cpu_ticks_in);
+  cprintf("Current diff: %d\n",ticks-p->cpu_ticks_in);    
+  p->cpu_ticks_total += (ticks-p->cpu_ticks_in);
 #endif
 }
 
@@ -568,7 +569,7 @@ void
 procdumpP2P3P4(struct proc *p, char *state_string)
 {
   //PID     Name         UID        GID     PPID    Elapsed CPU     State   Size     PCs
-  cprintf("%d\t%s\t\t%d\t%d\t%d\t%d.%03d\t%d.%03d\t%s\t%d",
+  cprintf("%d\t%s\t\t%d\t%d\t%d\t%d.%d\t%d.%d\t%s\t%d",
    p->pid,
    p->name,
    p->uid,
