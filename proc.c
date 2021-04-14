@@ -440,7 +440,6 @@ sched(void)
   swtch(&p->context, mycpu()->scheduler);
   mycpu()->intena = intena;
 #ifdef CS333_P2
-  cprintf("Current diff: %d\n",ticks-p->cpu_ticks_in);    
   p->cpu_ticks_total += (ticks-p->cpu_ticks_in);
 #endif
 }
