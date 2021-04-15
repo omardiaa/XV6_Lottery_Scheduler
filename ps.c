@@ -8,17 +8,17 @@ int
 main(int argc, char *argv[])
 {
   if(argc<2){
-    cprintf("Error: max value must be specified\n");
+    printf(1,"Error: max value must be specified\n");
     exit();
   }else if(argc>2){
-    cprintf("Error: too many arguments\n");
+    printf(1,"Error: too many arguments\n");
     exit();
   }
-  uint max = argv[1];
+  uint max = atoi(argv[1]);
   struct uproc *table = malloc(max);
 
-  int table_size;
-  if (table_size=getprocs(max,&table)) {
+  int table_size=getprocs(max,table);
+  if (table_size<0) {
     printf(2,"Error: ps call failed. %s at line %d\n",
         __FILE__, __LINE__);
     exit();
