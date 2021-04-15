@@ -649,6 +649,7 @@ procdump(void)
 int
 getprocs(uint max, struct uproc* table){
   struct proc *p;
+  uint tableSize=0;
   acquire(&ptable.lock);
   for(p = ptable.proc; p < &ptable.proc[min(NPROC,max)]; p++){
     if(p->state!=UNUSED && p->state!=EMBRYO){
@@ -661,10 +662,11 @@ getprocs(uint max, struct uproc* table){
         table->size = p->sz;
         safestrcpy(table->name,p->name,STRMAX);
         table++;
+        tableSize++;
     }
   }
   release(&ptable.lock);
-  return 0;
+  return tableSize;
 }
 #endif
 #if defined(CS333_P3)

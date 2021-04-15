@@ -19,6 +19,7 @@ main(int argc, char *argv[])
 
   int table_size=getprocs(max,table);
   if (table_size<0) {
+    printf(1,"Table size: %d\n",table_size);
     printf(2,"Error: ps call failed. %s at line %d\n",
         __FILE__, __LINE__);
     exit();
