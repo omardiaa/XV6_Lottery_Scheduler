@@ -9,7 +9,9 @@
 #ifdef PDX_XV6
 #include "pdx-kernel.h"
 #endif // PDX_XV6
-
+#ifdef CS333_P2
+#include "uproc.h"
+#endif
 int
 sys_fork(void)
 {
@@ -151,5 +153,12 @@ sys_setgid(void)
   myproc()->gid = gid;
   return 0;
 }
-
+int
+sys_getprocs(void){
+  uint max;
+  struct uproc* table;
+  if(argint(0, &max) < 0 || argint(1, &table) < 0)
+    return -1;
+  return getprocs(max,table);
+}
 #endif

@@ -15,6 +15,9 @@ static char *states[] = {
   [RUNNING]   "run   ",
   [ZOMBIE]    "zombie"
 };
+#ifdef CS333_P2
+#include "uproc.h"
+#endif
 
 #ifdef CS333_P3
 // record with head and tail pointer for constant-time access to the beginning
@@ -642,7 +645,12 @@ procdump(void)
   cprintf("$ ");  // simulate shell prompt
 #endif // CS333_P1
 }
+#ifdef CS333_P2
+int
+getprocs(uint max, struct uproc*){
 
+}
+#endif
 #if defined(CS333_P3)
 // list management helper functions
 static void
