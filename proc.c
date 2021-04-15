@@ -439,12 +439,14 @@ sched(void)
     panic("sched running");
   if(readeflags()&FL_IF)
     panic("sched interruptible");
+  #ifdef CS333_P2
+  p->cpu_ticks_total += (ticks-p->cpu_ticks_in);
+  #endif
+  
   intena = mycpu()->intena;
   swtch(&p->context, mycpu()->scheduler);
   mycpu()->intena = intena;
-#ifdef CS333_P2
-  p->cpu_ticks_total += (ticks-p->cpu_ticks_in);
-#endif
+
 }
 
 // Give up the CPU for one scheduling round.
