@@ -10,7 +10,7 @@
 // Note the CPUTIME_TEST requires GETPROCS_TEST
 #define UIDGIDPPID_TEST
 //#define CPUTIME_TEST
-//#define GETPROCS_TEST
+#define GETPROCS_TEST
 //#define TIME_TEST
 
 

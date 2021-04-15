@@ -649,9 +649,11 @@ procdump(void)
 int
 getprocs(uint max, struct uproc* table){
   struct proc *p;
-  uint tableSize=0;
+  int tableSize=0;
   acquire(&ptable.lock);
+  cprintf("Acquired Lock");
   for(p = ptable.proc; p < &ptable.proc[min(NPROC,max)]; p++){
+    cprintf("Current table size: %d. Looping...\n",tableSize);
     if(p->state!=UNUSED && p->state!=EMBRYO){
         table->pid = p->pid;
         table->uid = p->uid;
@@ -666,6 +668,7 @@ getprocs(uint max, struct uproc* table){
     }
   }
   release(&ptable.lock);
+  cprintf("Released lock");
   return tableSize;
 }
 #endif

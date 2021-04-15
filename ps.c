@@ -14,10 +14,11 @@ main(int argc, char *argv[])
     printf(1,"Error: too many arguments\n");
     exit();
   }
-  uint max = atoi(argv[1]);
+  int max = atoi(argv[1]);
   struct uproc *table = malloc(max);
 
-  int table_size=getprocs(max,table);
+  int table_size;
+  table_size=getprocs(max,table);
   if (table_size<0) {
     printf(1,"Table size: %d\n",table_size);
     printf(2,"Error: ps call failed. %s at line %d\n",
