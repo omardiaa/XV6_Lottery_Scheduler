@@ -647,8 +647,8 @@ procdump(void)
 }
 #ifdef CS333_P2
 int
-getprocs(uint max, struct uproc*){
-
+getprocs(uint max, struct uproc* table){
+  return 0;
 }
 #endif
 #if defined(CS333_P3)

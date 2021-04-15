@@ -155,9 +155,9 @@ sys_setgid(void)
 }
 int
 sys_getprocs(void){
-  uint max;
+  int max;
   struct uproc* table;
-  if(argint(0, &max) < 0 || argint(1, &table) < 0)
+  if(argint(0, &max) < 0 || argptr(1, (void *)&table, sizeof(struct uproc)) < 0)
     return -1;
   return getprocs(max,table);
 }
