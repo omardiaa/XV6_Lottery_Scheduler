@@ -3,6 +3,7 @@
 #include "types.h"
 #include "user.h"
 #include "ps.h"
+#include "uproc.h"
 
 int
 main(int argc, char *argv[])
@@ -15,7 +16,8 @@ main(int argc, char *argv[])
     exit();
   }
   int max = atoi(argv[1]);
-  struct uproc *table = malloc(max);
+  struct uproc *table;
+  table = malloc(sizeof(struct uproc) * max);
 
   int table_size;
   table_size=getprocs(max,table);
@@ -25,8 +27,9 @@ main(int argc, char *argv[])
         __FILE__, __LINE__);
     exit();
   }
+  printf(1,"PID\tUID\tGID\tPPID\tElapsed Ticks\tCPU Total Ticks\tState\tSize\tName\n");
   for(int i=0;i<table_size;i++){
-    // cprintf("%s",table[i]->)
+     printf(1,"%d\t%d\t%d\t%d\t%d\t\t%d\t\t%s\t%d\t%s\n",table[i].pid,table[i].uid,table[i].gid,table[i].ppid,table[i].elapsed_ticks,table[i].CPU_total_ticks,table[i].state,table[i].size,table[i].name);
   }
 
   exit();

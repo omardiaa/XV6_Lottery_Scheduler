@@ -651,13 +651,11 @@ getprocs(uint max, struct uproc* table){
   struct proc *p;
   int tableSize=0;
   acquire(&ptable.lock);
-  cprintf("Acquired Lock");
   for(p = ptable.proc; p < &ptable.proc[min(NPROC,max)]; p++){
-    cprintf("Current table size: %d. Looping...\n",tableSize);
     if(p->state!=UNUSED && p->state!=EMBRYO){
         table->pid = p->pid;
         table->uid = p->uid;
-        table->ppid = p->parent->pid;
+        table->ppid = p->parent==NULL?p->pid:p->parent->pid;
         table->elapsed_ticks = ticks - p->start_ticks;
         table->CPU_total_ticks = p->cpu_ticks_total;
         safestrcpy(table->state,states[p->state],STRMAX);
@@ -668,7 +666,6 @@ getprocs(uint max, struct uproc* table){
     }
   }
   release(&ptable.lock);
-  cprintf("Released lock");
   return tableSize;
 }
 #endif
