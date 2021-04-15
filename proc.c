@@ -652,7 +652,15 @@ getprocs(uint max, struct uproc* table){
   acquire(&ptable.lock);
   for(p = ptable.proc; p < &ptable.proc[min(NPROC,max)]; p++){
     if(p->state!=UNUSED && p->state!=EMBRYO){
-      
+        table->pid = p->pid;
+        table->uid = p->uid;
+        table->ppid = p->parent->pid;
+        table->elapsedticks = ticks - p->start_ticks;
+        table->CPUtotalticks = p->cpu_ticks_total;
+        table->state = p->state;
+        table->size = p->sz;
+        table->name = p->name;
+        table++;
     }
   }
   release(&ptable.lock);
