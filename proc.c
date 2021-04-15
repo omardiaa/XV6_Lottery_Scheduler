@@ -648,6 +648,14 @@ procdump(void)
 #ifdef CS333_P2
 int
 getprocs(uint max, struct uproc* table){
+  struct proc *p;
+  acquire(&ptable.lock);
+  for(p = ptable.proc; p < &ptable.proc[min(NPROC,max)]; p++){
+    if(p->state!=UNUSED && p->state!=EMBRYO){
+      
+    }
+  }
+  release(&ptable.lock);
   return 0;
 }
 #endif
