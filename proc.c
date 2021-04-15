@@ -442,7 +442,7 @@ sched(void)
   #ifdef CS333_P2
   p->cpu_ticks_total += (ticks-p->cpu_ticks_in);
   #endif
-  
+
   intena = mycpu()->intena;
   swtch(&p->context, mycpu()->scheduler);
   mycpu()->intena = intena;
@@ -573,17 +573,26 @@ void
 procdumpP2P3P4(struct proc *p, char *state_string)
 {
   //PID     Name         UID        GID     PPID    Elapsed CPU     State   Size     PCs
-  cprintf("%d\t%s\t\t%d\t%d\t%d\t%d.%d\t%d.%d\t%s\t%d",
-   p->pid,
+  int s_start_ticks = (ticks-(p->start_ticks))/1000;
+  int ms_start_ticks = (ticks-(p->start_ticks))%1000;
+
+  int s_cpu_total_ticks =(p->cpu_ticks_total)/1000;
+  int ms_cpu_total_ticks =(p->cpu_ticks_total)%1000;
+
+  cprintf("%d\t%s\t\t%d\t%d\t%d\t%d.",
+  p->pid,
    p->name,
    p->uid,
    p->gid,
    p->parent==NULL?p->pid:p->parent->pid,
-   (ticks-(p->start_ticks))/1000,(ticks-(p->start_ticks))%1000,
-   (p->cpu_ticks_total)/1000,(p->cpu_ticks_total)%1000,
-   state_string,
-   p->sz);
-   
+   s_start_ticks
+   );
+  if (ms_start_ticks < 10)  cprintf("0");
+  if (ms_start_ticks < 100) cprintf("0");
+  cprintf("%d\t%d.",ms_start_ticks,s_cpu_total_ticks);
+  if (ms_cpu_total_ticks < 10)  cprintf("0");
+  if (ms_cpu_total_ticks < 100) cprintf("0");
+  cprintf("%d\t%s\t%d",ms_cpu_total_ticks,state_string,p->sz);
   return;
 }
 #elif defined(CS333_P1)
