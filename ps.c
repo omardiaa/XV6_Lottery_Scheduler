@@ -7,8 +7,14 @@
 int
 main(int argc, char *argv[])
 {
- 
-  uint max;
+  if(argc<2){
+    cprintf("Error: max value must be specified\n");
+    exit();
+  }else if(argc>2){
+    cprintf("Error: too many arguments\n");
+    exit();
+  }
+  uint max = argv[1];
   struct uproc *table = malloc(max);
 
   int table_size;
