@@ -12,28 +12,10 @@
 int
 main(int argc, char *argv[])
 {
-  // int ticks = uptime();
-  // int ms = ticks % TPS; // TPS in pdx.h
-  // int s  = ticks / TPS;
-  // int hours = (s / SPH);
-  // int mins  = (s - (SPH * hours)) / 60;
-  // int secs  = (s - (hours * SPH) - (mins * SPM));
-
-  // pad(hours, ":"); // note that hours is not bounded, so may take more than 2 digits
-  // pad(mins,  ":");
-  // pad(secs,  ".");
-
-  // // milliseconds
-  // if (ms < 10)  printf(1, "0");
-  // if (ms < 100) printf(1, "0");
-  // printf(1, "%d\n", ms);
-
-
     int start_time = uptime();
     int end_time = 0;
     int ret;
 
-   // int cur_arg=1;
     ret = fork();
     if (ret == 0){
       exec(argv[1], argv+1);
@@ -47,7 +29,15 @@ main(int argc, char *argv[])
       wait();
   
       end_time=uptime();
-      printf(1,"%s ran in %d milli seconds\n", argv[1],end_time-start_time); 
+      
+      int ms = (end_time-start_time) % TPS; // TPS in pdx.h
+      int s  = (end_time-start_time) / TPS;
+      printf(1,"%s ran in %d.", argv[1],s); 
+      // milliseconds
+      if (ms < 10)  printf(1, "0");
+      if (ms < 100) printf(1, "0");
+      printf(1, "%d\n", ms);
+      printf(1,"%d seconds\n",ms); 
 
     }
   
