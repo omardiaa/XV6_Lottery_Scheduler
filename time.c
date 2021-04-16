@@ -36,8 +36,7 @@ main(int argc, char *argv[])
       // milliseconds
       if (ms < 10)  printf(1, "0");
       if (ms < 100) printf(1, "0");
-      printf(1, "%d\n", ms);
-      printf(1,"%d seconds\n",ms); 
+      printf(1, "%d seconds\n", ms); 
 
     }
   
