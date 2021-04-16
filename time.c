@@ -19,7 +19,6 @@ main(int argc, char *argv[])
     ret = fork();
     if (ret == 0){
       exec(argv[1], argv+1);
-      printf(2, "FAILED: exec failed to execute %s\n", argv[1]);
       exit();
     }
     else if(ret == -1){
