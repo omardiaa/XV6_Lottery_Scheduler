@@ -11,7 +11,7 @@
 #define UIDGIDPPID_TEST
 #define CPUTIME_TEST
 #define GETPROCS_TEST
-//#define TIME_TEST
+#define TIME_TEST
 
 
 #ifdef GETPROCS_TEST

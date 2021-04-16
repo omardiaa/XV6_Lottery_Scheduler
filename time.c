@@ -29,25 +29,27 @@ main(int argc, char *argv[])
   // printf(1, "%d\n", ms);
 
 
-  for(int i=0;i<argc;i++){
+    int start_time = uptime();
+    int end_time = 0;
     int ret;
 
+   // int cur_arg=1;
     ret = fork();
     if (ret == 0){
-      exec(argv[i], argv);
-      printf(2, "FAILED: exec failed to execute %s\n", argv[i]);
+      exec(argv[1], argv+1);
+      printf(2, "FAILED: exec failed to execute %s\n", argv[1]);
       exit();
     }
     else if(ret == -1){
       printf(2, "FAILED: fork failed\n");
     }
     else{
-      printf(1, "Executing wait on: %s\n",argv[i]);
       wait();
-      printf(1, "Finished Executing wait on: %s\n",argv[i]);
+  
+      end_time=uptime();
+      printf(1,"%s ran in %d milli seconds\n", argv[1],end_time-start_time); 
 
     }
-  }
   
 
   exit();
