@@ -28,24 +28,29 @@ main(int argc, char *argv[])
     exit();
   }
   
-  printf(1,"PID\tUID\tGID\tPPID\tElapsed Ticks\tCPU Total Ticks\tState\tSize\tName\n");
+  printf(1,"\nPID\tName         UID\tGID\tPPID\tElapsed\tCPU\tState\tSize\n");
   for(int i=0;i<table_size;i++){
     int s_elapsed_ticks = table[i].elapsed_ticks/1000;
     int ms_elapsed_ticks = table[i].elapsed_ticks%1000;
 
     int s_cpu_total_ticks =table[i].CPU_total_ticks/1000;
     int ms_cpu_total_ticks =table[i].CPU_total_ticks%1000;
-    
-    printf(1,"%d\t%d\t%d\t%d\t%d.",table[i].pid,table[i].uid,table[i].gid,table[i].ppid,s_elapsed_ticks);
-    if (ms_elapsed_ticks < 10)  printf(1,"0");
-    if (ms_elapsed_ticks < 100) printf(1,"0");
-    
-    printf(1,"%d\t\t%d.",ms_elapsed_ticks,s_cpu_total_ticks);
-    if (ms_cpu_total_ticks < 10)  printf(1,"0");
-    if (ms_cpu_total_ticks < 100) printf(1,"0");
-
-    printf(1,"%d\t\t%s\t%d\t%s\n",ms_cpu_total_ticks,table[i].state,table[i].size,table[i].name);
-  }
+ 
+   printf(1,"%d\t%s\t     %d\t\t%d\t%d\t%d.",
+   table[i].pid,
+   table[i].name,
+   table[i].uid,
+   table[i].gid,
+   table[i].ppid,
+   s_elapsed_ticks
+   );
+   if (ms_elapsed_ticks < 10)  printf(1,"0");
+   if (ms_elapsed_ticks < 100) printf(1,"0");
+   printf(1,"%d\t%d.",ms_elapsed_ticks,s_cpu_total_ticks);
+   if (ms_cpu_total_ticks < 10)  printf(1,"0");
+   if (ms_cpu_total_ticks < 100) printf(1,"0");
+   printf(1,"%d\t%s\t%d\t",ms_cpu_total_ticks,table[i].state,table[i].size);
+ }
 
   exit();
 }
