@@ -666,7 +666,8 @@ getprocs(uint max, struct uproc* table){
     if(p->state!=UNUSED && p->state!=EMBRYO){
         table->pid = p->pid;
         table->uid = p->uid;
-        table->ppid = p->parent==NULL?p->pid:p->parent->pid;
+        table->gid = p->gid;
+	table->ppid = p->parent==NULL?p->pid:p->parent->pid;
         table->elapsed_ticks = ticks - p->start_ticks;
         table->CPU_total_ticks = p->cpu_ticks_total;
         safestrcpy(table->state,states[p->state],STRMAX);

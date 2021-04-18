@@ -51,7 +51,7 @@ main(int argc, char *argv[])
    if (ms_cpu_total_ticks < 100) printf(1,"0");
    printf(1,"%d\t%s\t%d\n",ms_cpu_total_ticks,table[i].state,table[i].size);
  }
-
+  free(table);
   exit();
 }
 #endif // CS333_P2
