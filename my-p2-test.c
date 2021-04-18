@@ -8,40 +8,10 @@
 
 // comment out tests for features the student doesn't have implemented
 // Note the CPUTIME_TEST requires GETPROCS_TEST
-#define CPUTIME_TEST
 #define GETPROCS_TEST
-
 
 #ifdef GETPROCS_TEST
 #include "uproc.h"
-#endif
-
-#ifdef GETPROCS_TEST
-#ifdef CPUTIME_TEST
-// Simple test to have the program sleep for 200 milliseconds to see if CPU_time properly doesn't change
-// And then gets CPU_time again to see if elapsed CPU_total_ticks is reasonable
-static int
-getcputime(char * name, struct uproc * table){
-  struct uproc *p = 0;
-  int size;
-
-  size = getprocs(64, table);
-  for(int i = 0; i < size; ++i){
-    if(strcmp(table[i].name, name) == 0){
-      p = table + i;
-      break;
-    }
-  }
-  if(p == 0){
-    printf(2, "FAILED: Test program \"%s\" not found in table returned by getprocs\n", name);
-    return -1;
-  }
-  else
-    return p->CPU_total_ticks;
-}
-
-
-#endif
 #endif
 
 #ifdef GETPROCS_TEST
