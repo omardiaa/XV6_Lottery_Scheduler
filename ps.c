@@ -49,7 +49,7 @@ main(int argc, char *argv[])
    printf(1,"%d\t%d.",ms_elapsed_ticks,s_cpu_total_ticks);
    if (ms_cpu_total_ticks < 10)  printf(1,"0");
    if (ms_cpu_total_ticks < 100) printf(1,"0");
-   printf(1,"%d\t%s\t%d\t",ms_cpu_total_ticks,table[i].state,table[i].size);
+   printf(1,"%d\t%s\t%d\n",ms_cpu_total_ticks,table[i].state,table[i].size);
  }
 
   exit();
