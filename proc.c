@@ -664,17 +664,17 @@ getprocs(uint max, struct uproc* table){
   acquire(&ptable.lock);
   for(p = ptable.proc; p < &ptable.proc[min(NPROC,max)]; p++){
     if(p->state!=UNUSED && p->state!=EMBRYO){
-        table->pid = p->pid;
-        table->uid = p->uid;
-        table->gid = p->gid;
-	table->ppid = p->parent==NULL?p->pid:p->parent->pid;
-        table->elapsed_ticks = ticks - p->start_ticks;
-        table->CPU_total_ticks = p->cpu_ticks_total;
-        safestrcpy(table->state,states[p->state],STRMAX);
-        table->size = p->sz;
-        safestrcpy(table->name,p->name,STRMAX);
-        table++;
-        tableSize++;
+      table->pid = p->pid;
+      table->uid = p->uid;
+      table->gid = p->gid;
+      table->ppid = p->parent==NULL?p->pid:p->parent->pid;
+      table->elapsed_ticks = ticks - p->start_ticks;
+      table->CPU_total_ticks = p->cpu_ticks_total;
+      safestrcpy(table->state,states[p->state],STRMAX);
+      table->size = p->sz;
+      safestrcpy(table->name,p->name,STRMAX);
+      table++;
+      tableSize++;
     }
   }
   release(&ptable.lock);
