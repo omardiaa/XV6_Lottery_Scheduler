@@ -579,7 +579,7 @@ procdumpP2P3P4(struct proc *p, char *state_string)
   int s_cpu_total_ticks =(p->cpu_ticks_total)/1000;
   int ms_cpu_total_ticks =(p->cpu_ticks_total)%1000;
 
-  cprintf("%d\t%s\t\t%d\t%d\t%d\t%d.",
+  cprintf("%d\t%s\t     %d\t\t%d\t%d\t%d.",
   p->pid,
    p->name,
    p->uid,
@@ -592,7 +592,7 @@ procdumpP2P3P4(struct proc *p, char *state_string)
   cprintf("%d\t%d.",ms_start_ticks,s_cpu_total_ticks);
   if (ms_cpu_total_ticks < 10)  cprintf("0");
   if (ms_cpu_total_ticks < 100) cprintf("0");
-  cprintf("%d\t%s\t%d",ms_cpu_total_ticks,state_string,p->sz);
+  cprintf("%d\t%s\t%d\t",ms_cpu_total_ticks,state_string,p->sz);
   return;
 }
 #elif defined(CS333_P1)
