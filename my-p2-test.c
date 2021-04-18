@@ -40,50 +40,7 @@ getcputime(char * name, struct uproc * table){
     return p->CPU_total_ticks;
 }
 
-static void
-testcputime(char * name){
-  struct uproc *table;
-  uint time1, time2, pre_sleep, post_sleep;
-  int success = 0;
-  int i, num;
 
-  printf(1, "\n----------\nRunning CPU Time Test\n----------\n");
-  table = malloc(sizeof(struct uproc) * 64);
-  if (!table) {
-    printf(2, "Error: malloc() call failed. %s at line %d\n", __FUNCTION__, __LINE__);
-    exit();
-  }
-  printf(1, "This will take a couple seconds\n");
-
-  // Loop for a long time to see if the elapsed CPU_total_ticks is in a reasonable range
-  time1 = getcputime(name, table);
-  for(i = 0, num = 0; i < 1000000; ++i){
-    ++num;
-    if(num % 100000 == 0){
-      pre_sleep = getcputime(name, table);
-      sleep(200);
-      post_sleep = getcputime(name, table);
-      if((post_sleep - pre_sleep) >= 100){
-        printf(2, "FAILED: CPU_total_ticks changed by 100+ milliseconds while process was asleep\n");
-        success = -1;
-      }
-    }
-  }
-  time2 = getcputime(name, table);
-  if((time2 - time1) < 0){
-    printf(2, "FAILED: difference in CPU_total_ticks is negative.  T2 - T1 = %d\n", (time2 - time1));
-    success = -1;
-  }
-  if((time2 - time1) > 400){
-    printf(2, "ABNORMALLY HIGH: T2 - T1 = %d milliseconds.  Run test again\n", (time2 - time1));
-    success = -1;
-  }
-  printf(1, "T2 - T1 = %d milliseconds\n", (time2 - time1));
-  free(table);
-
-  if(success == 0)
-    printf(1, "** All Tests Passed! **\n");
-}
 #endif
 #endif
 
