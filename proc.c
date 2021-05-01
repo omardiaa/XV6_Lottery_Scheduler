@@ -521,30 +521,6 @@ wait(void)
       release(&ptable.lock);
       return pid;
     }
-    // for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-    //   if(p->parent != curproc)
-    //     continue;
-    //   havekids = 1;
-    //   if(p->state == ZOMBIE){
-    //     // Found one.
-    //     pid = p->pid;
-    //     kfree(p->kstack);
-    //     p->kstack = 0;
-    //     freevm(p->pgdir);
-    //     p->pid = 0;
-    //     p->parent = 0;
-    //     p->name[0] = 0;
-    //     p->killed = 0;
-    //     if (stateListRemove(&ptable.list[ZOMBIE], p) == -1) {
-    //       panic("failed to remove from ZOMBIE list in wait()");
-    //     }
-    //     assertState(p, ZOMBIE, __FUNCTION__, __LINE__);
-    //     p->state = UNUSED;
-    //     stateListAdd(&ptable.list[UNUSED], p);
-    //     release(&ptable.lock);
-    //     return pid;
-    //   }
-    // }
 
     // No point waiting if we don't have any children.
     if(!havekids || curproc->killed){
@@ -901,7 +877,6 @@ wakeup1(void *chan)
 {
   struct proc *p;
   for(p=ptable.list[SLEEPING].head;p!=NULL;p=p->next)
-  // for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
     if(p->chan == chan){
       // Remove from SLEEPING list. What if there are multiple SLEEPING processes?
       // we want to wake up?
@@ -990,23 +965,6 @@ kill(int pid)
     }
   }
   
-  // for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-  //   if(p->pid == pid){
-  //     p->killed = 1;
-  //     // Wake process from sleep if necessary.
-  //     if(p->state == SLEEPING){
-        
-  //       if (stateListRemove(&ptable.list[SLEEPING], p) == -1) {
-  //         panic("failed to remove from SLEEPING list in kill()");
-  //       }
-  //       assertState(p, SLEEPING, __FUNCTION__, __LINE__);
-  //       p->state = RUNNABLE;
-  //       stateListAdd(&ptable.list[RUNNABLE],p);
-  //     }
-  //     release(&ptable.lock);
-  //     return 0;
-  //   }
-  // }
   release(&ptable.lock);
   return -1;
 }
