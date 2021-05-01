@@ -876,7 +876,8 @@ static void
 wakeup1(void *chan)
 {
   struct proc *p;
-  for(p=ptable.list[SLEEPING].head;p!=NULL;p=p->next)
+  // for(p=ptable.list[SLEEPING].head;p!=NULL;p=p->next)
+  while(p=ptable.list[SLEEPING].head)//while head not NULL (p=head)
     if(p->chan == chan){
       // Remove from SLEEPING list. What if there are multiple SLEEPING processes?
       // we want to wake up?
