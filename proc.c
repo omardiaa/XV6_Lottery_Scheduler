@@ -50,6 +50,8 @@ static void initFreeList(void);
 static void stateListAdd(struct ptrs*, struct proc*);
 static int  stateListRemove(struct ptrs*, struct proc* p);
 static void assertState(struct proc*, enum procstate, const char *, int);
+const int PER_LINE = 15;  // per line max on print
+const int PER_LINE_Z = (PER_LINE/2);  // zombie list has more chars per entry on print
 #ifdef DEBUG
 static void checkProcs(const char *, const char *, int);
 #endif
@@ -57,8 +59,6 @@ static void checkProcs(const char *, const char *, int);
 #ifdef CS333_P4
 static void printReadyLists();
 static void printReadyList(struct proc *, int);
-const int PER_LINE = 15;  // per line max on print
-const int PER_LINE_Z = (PER_LINE/2);  // zombie list has more chars per entry on print
 #endif // CS333_P4
 
 static struct proc *initproc;
