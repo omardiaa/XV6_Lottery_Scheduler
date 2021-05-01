@@ -149,8 +149,9 @@ allocproc(void)
 
   // Allocate kernel stack.
   if((p->kstack = kalloc()) == 0){
+  // acquire(&ptable.lock);
+
 #ifdef CS333_P3
-    acquire(&ptable.lock);
 
     if(stateListRemove(&ptable.list[EMBRYO], p)==-1){
       panic("failed to remove from EMBRYO list after kernel stack allocation failure in allocproc()");
@@ -160,9 +161,10 @@ allocproc(void)
     p->state = UNUSED;
 #ifdef CS333_P3
     //TODO add to UNUSED list
-  release(&ptable.lock);
 
 #endif
+  // release(&ptable.lock);
+
     return 0;
   }
   sp = p->kstack + KSTACKSIZE;
