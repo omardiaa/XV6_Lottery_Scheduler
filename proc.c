@@ -766,7 +766,7 @@ sleep(void *chan, struct spinlock *lk)
   }
   assertState(p, RUNNING, __FUNCTION__, __LINE__);
   p->state = SLEEPING;
-  //TODO add to SLEEPING list
+  stateListAdd(&ptable.list[SLEEPING], p);
 
   sched();
 
@@ -829,7 +829,9 @@ wakeup1(void *chan)
     if(p->state == SLEEPING && p->chan == chan){
       // Remove from SLEEPING list. What if there are multiple SLEEPING processes?
       // we want to wake up?
-
+      if (stateListRemove(&ptable.list[SLEEPING], p) == -1) {
+        panic("failed to remove from SLEEPING list in wakeup1()");
+      } 
       assertState(p, SLEEPING, __FUNCTION__, __LINE__);
       p->state = RUNNABLE;
       stateListAdd(&ptable.list[RUNNABLE],p);
@@ -875,7 +877,10 @@ kill(int pid)
       p->killed = 1;
       // Wake process from sleep if necessary.
       if(p->state == SLEEPING){
-        // TODO remove from SLEEPING list 
+        
+        if (stateListRemove(&ptable.list[SLEEPING], p) == -1) {
+          panic("failed to remove from SLEEPING list in kill()");
+        }
         assertState(p, SLEEPING, __FUNCTION__, __LINE__);
         p->state = RUNNABLE;
         stateListAdd(&ptable.list[RUNNABLE],p);
