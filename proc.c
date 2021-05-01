@@ -757,7 +757,7 @@ sleep(void *chan, struct spinlock *lk)
   // so it's okay to release lk.
   if(lk != &ptable.lock){  //DOC: sleeplock0
     acquire(&ptable.lock);  //DOC: sleeplock1
-    if (lk) w(lk);
+    if (lk) release(lk);
   }
   // Go to sleep.
   p->chan = chan;
