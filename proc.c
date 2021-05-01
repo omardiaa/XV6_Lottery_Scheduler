@@ -286,8 +286,8 @@ fork(void)
     np->state = UNUSED;
 #ifdef CS333_P3
     //TODO add to UNUSED list
-#endif
     release(&ptable.lock);
+#endif
     return -1;
   }
   np->sz = curproc->sz;
@@ -802,7 +802,7 @@ static void
 wakeup1(void *chan)
 {
   struct proc *p;
-  // acquire(&ptable.lock);
+  acquire(&ptable.lock);
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
     if(p->state == SLEEPING && p->chan == chan){
       // Remove from SLEEPING list. What if there are multiple SLEEPING processes?
@@ -813,7 +813,7 @@ wakeup1(void *chan)
       stateListAdd(&ptable.list[RUNNABLE],p);
 
     }
-  // release(&ptable.lock);
+  release(&ptable.lock);
   
 }
 #else
@@ -855,9 +855,6 @@ kill(int pid)
       // Wake process from sleep if necessary.
       if(p->state == SLEEPING){
         // TODO remove from SLEEPING list 
-        // think carefully (IMPORTANT). Could there be further sleeping processes
-        // that we need to wake up? if we remove p from the SLEEPING list,
-        // what does p->next become? 
         assertState(p, SLEEPING, __FUNCTION__, __LINE__);
         p->state = RUNNABLE;
         stateListAdd(&ptable.list[RUNNABLE],p);
