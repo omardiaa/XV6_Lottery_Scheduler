@@ -377,7 +377,8 @@ exit(void)
   }
   assertState(curproc, RUNNING, __FUNCTION__, __LINE__);
   curproc->state = ZOMBIE;
-  //TODO add to ZOMBIE list
+  stateListAdd(&ptable.list[ZOMBIE], curproc);
+
 #ifdef PDX_XV6
   curproc->sz = 0;
 #endif // PDX_XV6
@@ -463,7 +464,12 @@ wait(void)
         p->parent = 0;
         p->name[0] = 0;
         p->killed = 0;
+        if (stateListRemove(&ptable.list[ZOMBIE], p) == -1) {
+          panic("failed to remove from ZOMBIE list in wait()");
+        }
+        assertState(p, ZOMBIE, __FUNCTION__, __LINE__);
         p->state = UNUSED;
+        //TODO add to UNUSED list
         release(&ptable.lock);
         return pid;
       }
