@@ -15,8 +15,14 @@ static char *states[] = {
   [RUNNING]   "run   ",
   [ZOMBIE]    "zombie"
 };
+
+
 #ifdef CS333_P2
 #include "uproc.h"
+#endif
+
+#ifdef CS333_P3
+#define statecount NELEM(states)
 #endif
 
 #ifdef CS333_P3
@@ -32,6 +38,9 @@ struct ptrs {
 static struct {
   struct spinlock lock;
   struct proc proc[NPROC];
+ #ifdef CS333_P3
+  struct ptrs list[statecount];
+ #endif
 } ptable;
 
 // list management function prototypes
@@ -165,6 +174,13 @@ userinit(void)
 {
   struct proc *p;
   extern char _binary_initcode_start[], _binary_initcode_size[];
+
+  #ifdef CS333_P3
+    acquire(&ptable.lock);
+    initProcessLists();
+    initFreeList();
+    release(&ptable.lock);
+  #endif
 
   p = allocproc();
 
