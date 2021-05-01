@@ -127,11 +127,17 @@ allocproc(void)
 
   acquire(&ptable.lock);
   int found = 0;
-  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+  #ifdef CS333_P3
+    if(ptable.list[RUNNABLE].head!=NULL)
+      found = 1;
+  #else
+   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
     if(p->state == UNUSED) {
       found = 1;
       break;
     }
+  #endif
+ 
   if (!found) {
     release(&ptable.lock);
     return 0;
@@ -562,12 +568,6 @@ scheduler(void)
     acquire(&ptable.lock);
     
     for(p=ptable.list[RUNNABLE].head;p!=NULL;p=p->next){
-    // for(p = (*&ptable.list[RUNNABLE]).head; p != (*&ptable.list[RUNNABLE]).tail; p = p->next){
-    
-    // for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-    //   if(p->state != RUNNABLE)
-    //     continue;
-
       // Switch to chosen process.  It is the process's job
       // to release ptable.lock and then reacquire it
       // before jumping back to us.
