@@ -371,13 +371,39 @@ exit(void)
   wakeup1(curproc->parent);
 
   // Pass abandoned children to init.
-  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+  for(p=ptable.list[EMBRYO].head;p!=NULL;p=p->next){
     if(p->parent == curproc){
       p->parent = initproc;
-      if(p->state == ZOMBIE)
-        wakeup1(initproc);
     }
   }
+  for(p=ptable.list[SLEEPING].head;p!=NULL;p=p->next){
+    if(p->parent == curproc){
+      p->parent = initproc;
+    }
+  }
+  for(p=ptable.list[RUNNABLE].head;p!=NULL;p=p->next){
+    if(p->parent == curproc){
+      p->parent = initproc;
+    }
+  }
+  for(p=ptable.list[RUNNING].head;p!=NULL;p=p->next){
+    if(p->parent == curproc){
+      p->parent = initproc;
+    }
+  }
+  for(p=ptable.list[ZOMBIE].head;p!=NULL;p=p->next){
+    if(p->parent == curproc){
+      p->parent = initproc;
+      wakeup1(initproc);
+    }
+  }
+  // for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+  //   if(p->parent == curproc){
+  //     p->parent = initproc;
+  //     if(p->state == ZOMBIE)
+  //       wakeup1(initproc);
+  //   }
+  // }
 
   // Jump into the scheduler, never to return.
   if (stateListRemove(&ptable.list[RUNNING], curproc) == -1) {
