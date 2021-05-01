@@ -559,6 +559,12 @@ scheduler(void)
 #endif // PDX_XV6
       c->proc = p;
       switchuvm(p);
+      
+      if(stateListRemove(&ptable.list[RUNNABLE], p)==-1){
+        panic("failed to remove process we will run from RUNNABLE list in scheduler()");
+      }
+      assertState(p,&ptable.list[RUNNABLE], __FUNCTION__, __LINE__);
+     
       p->state = RUNNING;
 #ifdef CS333_P2
       p->cpu_ticks_in=ticks;
@@ -612,12 +618,7 @@ scheduler(void)
 #endif // PDX_XV6
       c->proc = p;
       switchuvm(p);
-      if(stateListRemove(&ptable.list[RUNNABLE], p)==-1){
-        panic("failed to remove process we will run from RUNNABLE list in scheduler()");
-      }
-      assertState(p,&ptable.list[RUNNABLE], __FUNCTION__, __LINE__);
       p->state = RUNNING;
-      //TODO add to RUNNING list
 
 #ifdef CS333_P2
       p->cpu_ticks_in=ticks;
