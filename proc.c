@@ -372,7 +372,12 @@ exit(void)
   }
 
   // Jump into the scheduler, never to return.
+  if (stateListRemove(&ptable.list[RUNNING], curproc) == -1) {
+    panic("failed to remove from RUNNING list in exit()");
+  }
+  assertState(curproc, RUNNING, __FUNCTION__, __LINE__);
   curproc->state = ZOMBIE;
+  //TODO add to ZOMBIE list
 #ifdef PDX_XV6
   curproc->sz = 0;
 #endif // PDX_XV6
@@ -419,6 +424,7 @@ exit(void)
 
   // Jump into the scheduler, never to return.
   curproc->state = ZOMBIE;
+  
 #ifdef PDX_XV6
   curproc->sz = 0;
 #endif // PDX_XV6
@@ -564,8 +570,9 @@ scheduler(void)
         panic("failed to remove process we will run from RUNNABLE list in scheduler()");
       }
       assertState(p,RUNNABLE, __FUNCTION__, __LINE__);
-     
       p->state = RUNNING;
+      stateListAdd(&ptable.list[RUNNING], p);
+
 #ifdef CS333_P2
       p->cpu_ticks_in=ticks;
 #endif
@@ -684,10 +691,14 @@ yield(void)
 
   acquire(&ptable.lock);  //DOC: yieldlock
 
-  //TODO remove from RUNNING list
+  if (stateListRemove(&ptable.list[RUNNING], curproc) == -1) {
+    panic("failed to remove from RUNNING list in yield()");
+  }
   assertState(curproc, RUNNING, __FUNCTION__, __LINE__);
+
   curproc->state = RUNNABLE;
   stateListAdd(&ptable.list[RUNNABLE],curproc);
+  
   sched();
   release(&ptable.lock);
 }
@@ -746,11 +757,16 @@ sleep(void *chan, struct spinlock *lk)
   // so it's okay to release lk.
   if(lk != &ptable.lock){  //DOC: sleeplock0
     acquire(&ptable.lock);  //DOC: sleeplock1
-    if (lk) release(lk);
+    if (lk) w(lk);
   }
   // Go to sleep.
   p->chan = chan;
+  if (stateListRemove(&ptable.list[RUNNING], p) == -1) {
+    panic("failed to remove from RUNNING list in sleep()");
+  }
+  assertState(p, RUNNING, __FUNCTION__, __LINE__);
   p->state = SLEEPING;
+  //TODO add to SLEEPING list
 
   sched();
 
