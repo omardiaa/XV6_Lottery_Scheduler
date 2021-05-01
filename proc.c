@@ -563,7 +563,7 @@ scheduler(void)
       if(stateListRemove(&ptable.list[RUNNABLE], p)==-1){
         panic("failed to remove process we will run from RUNNABLE list in scheduler()");
       }
-      assertState(p,&ptable.list[RUNNABLE], __FUNCTION__, __LINE__);
+      assertState(p,RUNNABLE, __FUNCTION__, __LINE__);
      
       p->state = RUNNING;
 #ifdef CS333_P2
