@@ -136,13 +136,29 @@ allocproc(void)
     release(&ptable.lock);
     return 0;
   }
+#ifdef CS333_P3
+  //TODO remove from UNUSED LIST
+  assertState(p, UNUSED, __FUNCTION__, __LINE__);
+#endif
   p->state = EMBRYO;
+#ifdef CS333_P3
+  stateListAdd(&ptable.list[EMBRYO], p);
+#endif  
   p->pid = nextpid++;
   release(&ptable.lock);
 
   // Allocate kernel stack.
   if((p->kstack = kalloc()) == 0){
+#ifdef CS333_P3
+    if(stateListRemove(&ptable.list[EMBRYO], p)==-1){
+      panic("failed to remove from EMBRYO list after kernel stack allocation failure in allocproc()");
+    }
+    assertState(p, EMBRYO, __FUNCTION__, __LINE__);
+#endif
     p->state = UNUSED;
+#ifdef CS333_P3
+    //TODO add to UNUSED list
+#endif
     return 0;
   }
   sp = p->kstack + KSTACKSIZE;
@@ -206,7 +222,16 @@ userinit(void)
   // writes to be visible, and the lock is also needed
   // because the assignment might not be atomic.
   acquire(&ptable.lock);
+#ifdef CS333_P3
+    if(stateListRemove(&ptable.list[EMBRYO], p)==-1){
+      panic("failed to remove from EMBRYO list after successfuly allocation in userinit()");
+    }
+    assertState(np, EMBRYO, __FUNCTION__, __LINE__);
+#endif
   p->state = RUNNABLE;
+#ifdef CS333_P3
+  //TODO add RUNNABLE list
+#endif
   release(&ptable.lock);
 }
 
@@ -251,7 +276,18 @@ fork(void)
   if((np->pgdir = copyuvm(curproc->pgdir, curproc->sz)) == 0){
     kfree(np->kstack);
     np->kstack = 0;
+#ifdef CS333_P3
+    acquire(&ptable.lock);
+    if(stateListRemove(&ptable.list[EMBRYO], p)==-1){
+      panic("failed to remove from EMBRYO list after kernel stack allocation failure in allocproc()");
+    }
+    assertState(np, EMBRYO, __FUNCTION__, __LINE__);
+#endif
     np->state = UNUSED;
+#ifdef CS333_P3
+    //TODO add to UNUSED list
+#endif
+    release(&ptable.lock);
     return -1;
   }
   np->sz = curproc->sz;
@@ -273,7 +309,16 @@ fork(void)
   pid = np->pid;
 
   acquire(&ptable.lock);
+#ifdef CS333_P3
+  if(stateListRemove(&ptable.list[EMBRYO], np)==-1){
+    panic("failed to remove from EMBRYO on successfuly fork");
+  }
+  assertState(np, EMBRYO, __FUNCTION__, __LINE__);
+#endif
   np->state = RUNNABLE;
+#ifdef CS333_P3
+  //TODO add to RUNNABLE list
+#endif
   release(&ptable.lock);
 
   return pid;
