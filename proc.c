@@ -226,7 +226,7 @@ userinit(void)
     if(stateListRemove(&ptable.list[EMBRYO], p)==-1){
       panic("failed to remove from EMBRYO list after successfuly allocation in userinit()");
     }
-    assertState(np, EMBRYO, __FUNCTION__, __LINE__);
+    assertState(p, EMBRYO, __FUNCTION__, __LINE__);
 #endif
   p->state = RUNNABLE;
 #ifdef CS333_P3
@@ -278,7 +278,7 @@ fork(void)
     np->kstack = 0;
 #ifdef CS333_P3
     acquire(&ptable.lock);
-    if(stateListRemove(&ptable.list[EMBRYO], p)==-1){
+    if(stateListRemove(&ptable.list[EMBRYO], np)==-1){
       panic("failed to remove from EMBRYO list after kernel stack allocation failure in allocproc()");
     }
     assertState(np, EMBRYO, __FUNCTION__, __LINE__);
