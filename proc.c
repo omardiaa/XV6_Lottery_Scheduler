@@ -137,7 +137,9 @@ allocproc(void)
     return 0;
   }
 #ifdef CS333_P3
-  //TODO remove from UNUSED LIST
+  if (stateListRemove(&ptable.list[UNUSED], p) == -1) {
+    panic("failed to remove from UNUSED list in allocproc()");
+  }
   assertState(p, UNUSED, __FUNCTION__, __LINE__);
 #endif
   p->state = EMBRYO;
@@ -160,8 +162,7 @@ allocproc(void)
 #endif
     p->state = UNUSED;
 #ifdef CS333_P3
-    //TODO add to UNUSED list
-
+    stateListAdd(&ptable.list[UNUSED], p);
 #endif
   release(&ptable.lock);
 
@@ -291,7 +292,7 @@ fork(void)
 #endif
     np->state = UNUSED;
 #ifdef CS333_P3
-    //TODO add to UNUSED list
+    stateListAdd(&ptable.list[UNUSED], np);
     release(&ptable.lock);
 #endif
     return -1;
@@ -469,7 +470,7 @@ wait(void)
         }
         assertState(p, ZOMBIE, __FUNCTION__, __LINE__);
         p->state = UNUSED;
-        //TODO add to UNUSED list
+        stateListAdd(&ptable.list[UNUSED], p);
         release(&ptable.lock);
         return pid;
       }
