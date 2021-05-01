@@ -397,13 +397,6 @@ exit(void)
       wakeup1(initproc);
     }
   }
-  // for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-  //   if(p->parent == curproc){
-  //     p->parent = initproc;
-  //     if(p->state == ZOMBIE)
-  //       wakeup1(initproc);
-  //   }
-  // }
 
   // Jump into the scheduler, never to return.
   if (stateListRemove(&ptable.list[RUNNING], curproc) == -1) {
@@ -911,23 +904,65 @@ kill(int pid)
   struct proc *p;
 
   acquire(&ptable.lock);
-  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+  for(p=ptable.list[EMBRYO].head;p!=NULL;p=p->next){
     if(p->pid == pid){
       p->killed = 1;
-      // Wake process from sleep if necessary.
-      if(p->state == SLEEPING){
-        
-        if (stateListRemove(&ptable.list[SLEEPING], p) == -1) {
-          panic("failed to remove from SLEEPING list in kill()");
-        }
-        assertState(p, SLEEPING, __FUNCTION__, __LINE__);
-        p->state = RUNNABLE;
-        stateListAdd(&ptable.list[RUNNABLE],p);
-      }
       release(&ptable.lock);
       return 0;
     }
   }
+  for(p=ptable.list[SLEEPING].head;p!=NULL;p=p->next){
+    if(p->pid == pid){
+      p->killed = 1;
+      if (stateListRemove(&ptable.list[SLEEPING], p) == -1) {
+        panic("failed to remove from SLEEPING list in kill()");
+      }
+      assertState(p, SLEEPING, __FUNCTION__, __LINE__);
+      p->state = RUNNABLE;
+      stateListAdd(&ptable.list[RUNNABLE],p);
+      release(&ptable.lock);
+      return 0;
+    }
+  }
+  for(p=ptable.list[RUNNABLE].head;p!=NULL;p=p->next){
+    if(p->pid == pid){
+      p->killed = 1;
+      release(&ptable.lock);
+      return 0;
+    }
+  }
+  for(p=ptable.list[RUNNING].head;p!=NULL;p=p->next){
+    if(p->pid == pid){
+      p->killed = 1;
+      release(&ptable.lock);
+      return 0;
+    }
+  }
+  for(p=ptable.list[ZOMBIE].head;p!=NULL;p=p->next){
+    if(p->pid == pid){
+      p->killed = 1;
+      release(&ptable.lock);
+      return 0;
+    }
+  }
+  
+  // for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+  //   if(p->pid == pid){
+  //     p->killed = 1;
+  //     // Wake process from sleep if necessary.
+  //     if(p->state == SLEEPING){
+        
+  //       if (stateListRemove(&ptable.list[SLEEPING], p) == -1) {
+  //         panic("failed to remove from SLEEPING list in kill()");
+  //       }
+  //       assertState(p, SLEEPING, __FUNCTION__, __LINE__);
+  //       p->state = RUNNABLE;
+  //       stateListAdd(&ptable.list[RUNNABLE],p);
+  //     }
+  //     release(&ptable.lock);
+  //     return 0;
+  //   }
+  // }
   release(&ptable.lock);
   return -1;
 }
