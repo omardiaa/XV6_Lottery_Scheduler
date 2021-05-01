@@ -477,30 +477,74 @@ wait(void)
   for(;;){
     // Scan through table looking for exited children.
     havekids = 0;
-    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    
+    for(p=ptable.list[EMBRYO].head;p!=NULL;p=p->next){
       if(p->parent != curproc)
         continue;
       havekids = 1;
-      if(p->state == ZOMBIE){
-        // Found one.
-        pid = p->pid;
-        kfree(p->kstack);
-        p->kstack = 0;
-        freevm(p->pgdir);
-        p->pid = 0;
-        p->parent = 0;
-        p->name[0] = 0;
-        p->killed = 0;
-        if (stateListRemove(&ptable.list[ZOMBIE], p) == -1) {
-          panic("failed to remove from ZOMBIE list in wait()");
-        }
-        assertState(p, ZOMBIE, __FUNCTION__, __LINE__);
-        p->state = UNUSED;
-        stateListAdd(&ptable.list[UNUSED], p);
-        release(&ptable.lock);
-        return pid;
-      }
     }
+    for(p=ptable.list[SLEEPING].head;p!=NULL;p=p->next){
+      if(p->parent != curproc)
+        continue;
+      havekids = 1;
+    }
+    for(p=ptable.list[RUNNABLE].head;p!=NULL;p=p->next){
+      if(p->parent != curproc)
+        continue;
+      havekids = 1;
+    }
+    for(p=ptable.list[RUNNING].head;p!=NULL;p=p->next){
+      if(p->parent != curproc)
+        continue;
+      havekids = 1;
+    }
+    for(p=ptable.list[ZOMBIE].head;p!=NULL;p=p->next){
+      if(p->parent != curproc)
+        continue;
+      havekids = 1;
+      
+      // Found one.
+      pid = p->pid;
+      kfree(p->kstack);
+      p->kstack = 0;
+      freevm(p->pgdir);
+      p->pid = 0;
+      p->parent = 0;
+      p->name[0] = 0;
+      p->killed = 0;
+      if (stateListRemove(&ptable.list[ZOMBIE], p) == -1) {
+        panic("failed to remove from ZOMBIE list in wait()");
+      }
+      assertState(p, ZOMBIE, __FUNCTION__, __LINE__);
+      p->state = UNUSED;
+      stateListAdd(&ptable.list[UNUSED], p);
+      release(&ptable.lock);
+      return pid;
+    }
+    // for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+    //   if(p->parent != curproc)
+    //     continue;
+    //   havekids = 1;
+    //   if(p->state == ZOMBIE){
+    //     // Found one.
+    //     pid = p->pid;
+    //     kfree(p->kstack);
+    //     p->kstack = 0;
+    //     freevm(p->pgdir);
+    //     p->pid = 0;
+    //     p->parent = 0;
+    //     p->name[0] = 0;
+    //     p->killed = 0;
+    //     if (stateListRemove(&ptable.list[ZOMBIE], p) == -1) {
+    //       panic("failed to remove from ZOMBIE list in wait()");
+    //     }
+    //     assertState(p, ZOMBIE, __FUNCTION__, __LINE__);
+    //     p->state = UNUSED;
+    //     stateListAdd(&ptable.list[UNUSED], p);
+    //     release(&ptable.lock);
+    //     return pid;
+    //   }
+    // }
 
     // No point waiting if we don't have any children.
     if(!havekids || curproc->killed){
