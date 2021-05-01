@@ -149,7 +149,7 @@ allocproc(void)
 
   // Allocate kernel stack.
   if((p->kstack = kalloc()) == 0){
-  // acquire(&ptable.lock);
+  acquire(&ptable.lock);
 
 #ifdef CS333_P3
 
@@ -163,7 +163,7 @@ allocproc(void)
     //TODO add to UNUSED list
 
 #endif
-  // release(&ptable.lock);
+  release(&ptable.lock);
 
     return 0;
   }
