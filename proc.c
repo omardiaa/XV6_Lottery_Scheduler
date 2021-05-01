@@ -128,7 +128,8 @@ allocproc(void)
   acquire(&ptable.lock);
   int found = 0;
   #ifdef CS333_P3
-    if(ptable.list[RUNNABLE].head!=NULL)
+    p=ptable.list[UNUSED].head;
+    if(p != NULL)
       found = 1;
   #else
    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
