@@ -230,7 +230,7 @@ userinit(void)
 #endif
   p->state = RUNNABLE;
 #ifdef CS333_P3
-  //TODO add RUNNABLE list
+  stateListAdd(&ptable.list[RUNNABLE],p);
 #endif
   release(&ptable.lock);
 }
@@ -317,7 +317,7 @@ fork(void)
 #endif
   np->state = RUNNABLE;
 #ifdef CS333_P3
-  //TODO add to RUNNABLE list
+  stateListAdd(&ptable.list[RUNNABLE], np);
 #endif
   release(&ptable.lock);
 
@@ -606,7 +606,13 @@ scheduler(void)
 #endif // PDX_XV6
       c->proc = p;
       switchuvm(p);
+      if(stateListRemove(&ptable.list[RUNNABLE], p)==-1){
+        panic("failed to remove process we will run from RUNNABLE list in scheduler()");
+      }
+      assertState(p,&ptable.list[RUNNABLE], __FUNCTION__, __LINE__);
       p->state = RUNNING;
+      //TODO add to RUNNING list
+
 #ifdef CS333_P2
       p->cpu_ticks_in=ticks;
 #endif
@@ -670,7 +676,11 @@ yield(void)
   struct proc *curproc = myproc();
 
   acquire(&ptable.lock);  //DOC: yieldlock
+
+  //TODO remove from RUNNING list
+  assertState(curproc, RUNNING, __FUNCTION__, __LINE__);
   curproc->state = RUNNABLE;
+  stateListAdd(&ptable.list[RUNNABLE],curproc);
   sched();
   release(&ptable.lock);
 }
@@ -792,10 +802,19 @@ static void
 wakeup1(void *chan)
 {
   struct proc *p;
-
+  // acquire(&ptable.lock);
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
-    if(p->state == SLEEPING && p->chan == chan)
+    if(p->state == SLEEPING && p->chan == chan){
+      // Remove from SLEEPING list. What if there are multiple SLEEPING processes?
+      // we want to wake up?
+
+      assertState(p, SLEEPING, __FUNCTION__, __LINE__);
       p->state = RUNNABLE;
+      stateListAdd(&ptable.list[RUNNABLE],p);
+
+    }
+  // release(&ptable.lock);
+  
 }
 #else
 
@@ -834,8 +853,15 @@ kill(int pid)
     if(p->pid == pid){
       p->killed = 1;
       // Wake process from sleep if necessary.
-      if(p->state == SLEEPING)
+      if(p->state == SLEEPING){
+        // TODO remove from SLEEPING list 
+        // think carefully (IMPORTANT). Could there be further sleeping processes
+        // that we need to wake up? if we remove p from the SLEEPING list,
+        // what does p->next become? 
+        assertState(p, SLEEPING, __FUNCTION__, __LINE__);
         p->state = RUNNABLE;
+        stateListAdd(&ptable.list[RUNNABLE],p);
+      }
       release(&ptable.lock);
       return 0;
     }
