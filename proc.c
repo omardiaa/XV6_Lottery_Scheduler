@@ -150,6 +150,8 @@ allocproc(void)
   // Allocate kernel stack.
   if((p->kstack = kalloc()) == 0){
 #ifdef CS333_P3
+    acquire(&ptable.lock);
+
     if(stateListRemove(&ptable.list[EMBRYO], p)==-1){
       panic("failed to remove from EMBRYO list after kernel stack allocation failure in allocproc()");
     }
@@ -158,6 +160,8 @@ allocproc(void)
     p->state = UNUSED;
 #ifdef CS333_P3
     //TODO add to UNUSED list
+  release(&ptable.lock);
+
 #endif
     return 0;
   }
@@ -802,7 +806,6 @@ static void
 wakeup1(void *chan)
 {
   struct proc *p;
-  acquire(&ptable.lock);
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
     if(p->state == SLEEPING && p->chan == chan){
       // Remove from SLEEPING list. What if there are multiple SLEEPING processes?
@@ -813,7 +816,6 @@ wakeup1(void *chan)
       stateListAdd(&ptable.list[RUNNABLE],p);
 
     }
-  release(&ptable.lock);
   
 }
 #else
