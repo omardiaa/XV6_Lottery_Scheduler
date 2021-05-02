@@ -45,8 +45,9 @@ main(int argc, char *argv[])
   } while(childCount);
 
   printf(1, "All child processes created\n");
-  sleep(10000);
-  
+  sleep(5000);
+  printf(1, "\nDone sleeping\n");
+  kill(3);
   exit();  // not reachable
 }
 #endif // CS333_P3
