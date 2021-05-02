@@ -96,3 +96,4 @@ testsetprio.c
 testsetuid.c
 time.c
 my-p2-test.c
+my-p3-test.c
