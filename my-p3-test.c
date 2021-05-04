@@ -45,7 +45,7 @@ main(int argc, char *argv[])
   } while(childCount);
 
   printf(1, "All child processes created\n");
-  sleep(5000);
+  sleep(5*TPS);
   printf(1, "\nDone sleeping\n");
   kill(3);
   exit();  // not reachable
