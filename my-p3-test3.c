@@ -13,6 +13,7 @@ main(void)
       exit();
   }
   if(pid == 0){
+    sleep(10*TPS);
     printf(1,"Child process is exiting normally. \n");
     exit();
   }
