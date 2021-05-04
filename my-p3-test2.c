@@ -19,8 +19,12 @@ main(void)
     sleep(5000);
     exit();
   }else{
+    printf(1,"Before Wait\n");
+    sleep(5000);
     wait();
-    printf(1,"Child process has exited\n")
+    printf(1,"After Wait\n");
+    sleep(5000);
+    printf(1,"Child process has exited\n");
   }
   exit();
 }
