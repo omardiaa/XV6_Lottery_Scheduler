@@ -1646,6 +1646,12 @@ printReadyList(struct proc *p, int prio)
     cprintf("(NULL)\n");
     return;
   }
+
+  if (p->state != RUNNABLE) {
+    cprintf("\nlist invariant failed: process %d has state %s but is on ready list\n",
+        p->pid, states[p->state]);
+  }
+
   int count = 0;
   do {
     cprintf("%d", p->pid);
@@ -1669,10 +1675,6 @@ printReadyLists()
   for (int i=0; i<=MAXPRIO; i++) {
     p = ptable.ready[i].head;
     cprintf("Prio %d: ", i);
-    if(p->state != RUNNABLE) {
-      cprintf("\nlist invariant failed: process %d has state %s but is on ready list\n",
-          p->pid, states[p->state]);
-    }
     printReadyList(p, i);
   }
 }
