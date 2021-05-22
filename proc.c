@@ -253,7 +253,7 @@ userinit(void)
 #endif
   p->state = RUNNABLE;
 #ifdef CS333_P3
-  stateListAdd(&ptable.list[RUNNABLE],p);
+  stateListAdd(&ptable.ready[0],p);
 #endif
   release(&ptable.lock);
 }
@@ -340,7 +340,7 @@ fork(void)
 #endif
   np->state = RUNNABLE;
 #ifdef CS333_P3
-  stateListAdd(&ptable.list[RUNNABLE], np);
+  stateListAdd(&ptable.ready[0], np);
 #endif
   release(&ptable.lock);
 
@@ -390,7 +390,7 @@ exit(void)
       p->parent = initproc;
     }
   }
-  for(p=ptable.list[RUNNABLE].head;p!=NULL;p=p->next){
+  for(p=ptable.ready[0].head;p!=NULL;p=p->next){
     if(p->parent == curproc){
       p->parent = initproc;
     }
@@ -497,7 +497,7 @@ wait(void)
         continue;
       havekids = 1;
     }
-    for(p=ptable.list[RUNNABLE].head;p!=NULL;p=p->next){
+    for(p=ptable.ready[0].head;p!=NULL;p=p->next){
       if(p->parent != curproc)
         continue;
       havekids = 1;
@@ -616,7 +616,7 @@ scheduler(void)
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
     
-    for(p=ptable.list[RUNNABLE].head;p!=NULL;p=p->next){
+    for(p=ptable.ready[0].head;p!=NULL;p=p->next){
       // Switch to chosen process.  It is the process's job
       // to release ptable.lock and then reacquire it
       // before jumping back to us.
@@ -626,10 +626,10 @@ scheduler(void)
       c->proc = p;
       switchuvm(p);
       
-      if(stateListRemove(&ptable.list[RUNNABLE], p)==-1){
+      if(stateListRemove(&ptable.ready[0], p)==-1){
         panic("failed to remove process we will run from RUNNABLE list in scheduler()");
       }
-      assertState(p,RUNNABLE, __FUNCTION__, __LINE__);
+      // assertState(p,RUNNABLE, __FUNCTION__, __LINE__);
       p->state = RUNNING;
       stateListAdd(&ptable.list[RUNNING], p);
 
@@ -757,7 +757,7 @@ yield(void)
   assertState(curproc, RUNNING, __FUNCTION__, __LINE__);
 
   curproc->state = RUNNABLE;
-  stateListAdd(&ptable.list[RUNNABLE],curproc);
+  stateListAdd(&ptable.ready[0],curproc);
   
   sched();
   release(&ptable.lock);
@@ -898,7 +898,7 @@ wakeup1(void *chan)
       } 
       assertState(p, SLEEPING, __FUNCTION__, __LINE__);
       p->state = RUNNABLE;
-      stateListAdd(&ptable.list[RUNNABLE],p);
+      stateListAdd(&ptable.ready[0],p);
 
     }
     p=nextproc;
@@ -952,12 +952,12 @@ kill(int pid)
       }
       assertState(p, SLEEPING, __FUNCTION__, __LINE__);
       p->state = RUNNABLE;
-      stateListAdd(&ptable.list[RUNNABLE],p);
+      stateListAdd(&ptable.ready[0],p);
       release(&ptable.lock);
       return 0;
     }
   }
-  for(p=ptable.list[RUNNABLE].head;p!=NULL;p=p->next){
+  for(p=ptable.ready[0].head;p!=NULL;p=p->next){
     if(p->pid == pid){
       p->killed = 1;
       release(&ptable.lock);
