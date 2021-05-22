@@ -30,7 +30,7 @@
 #define max(a, b) ((a) > (b) ? (a) : (b))
 
 #ifdef CS333_P4
-#define MAXPRIO 1
+#define MAXPRIO 5
 #endif
 
 #endif  // PDX_INCLUDE
