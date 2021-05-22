@@ -41,6 +41,10 @@ static struct {
  #ifdef CS333_P3
   struct ptrs list[statecount];
  #endif
+ #ifdef CS333_P4
+ struct ptrs ready[MAXPRIO+1];
+ uint PromoteAtTime ;
+ #endif
 } ptable;
 
 // list management function prototypes
@@ -230,6 +234,11 @@ userinit(void)
 
   safestrcpy(p->name, "initcode", sizeof(p->name));
   p->cwd = namei("/");
+
+#ifdef CS333_P4
+  p->priority = MAXPRIO;
+#endif
+
 
   // this assignment to p->state lets other cores
   // run this process. the acquire forces the above

@@ -29,4 +29,8 @@
 #define min(a, b) ((a) < (b) ? (a) : (b))
 #define max(a, b) ((a) > (b) ? (a) : (b))
 
+#ifdef CS333_P4
+#define MAXPRIO 1
+#endif
+
 #endif  // PDX_INCLUDE
