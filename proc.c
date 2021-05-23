@@ -774,32 +774,6 @@ scheduler(void)
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
 
-    if(ticks >= ptable.PromoteAtTime){ //Promotion
-      ptable.PromoteAtTime = ticks + TICKS_TO_PROMOTE;
-      //Promoting RUNNING list
-      for(p=ptable.list[RUNNING].head;p!=NULL;p=p->next){
-        if(p->priority < MAXPRIO) p->priority++;
-      }
-
-      //Promoting RUNNABLE (ready) list
-      for (i = 0; i <= MAXPRIO; i++) {
-        for(p=ptable.ready[i].head;p!=NULL;p=p->next){
-          if(p->priority < MAXPRIO) {
-            if(stateListRemove(&ptable.ready[p->priority], p)==-1){
-              panic("failed to remove from ready list in scheduler P4()");
-            }
-            p->priority++;
-            stateListAdd(&ptable.ready[p->priority],p);          
-          }       
-        }
-      }
-
-      //Promoting SLEEPING list
-      for(p=ptable.list[SLEEPING].head;p!=NULL;p=p->next){
-	      if(p->priority < MAXPRIO) p->priority++;
-      }
-    }
-
     for (i = MAXPRIO; i >= 0; i--) {
       for(p=ptable.ready[i].head;p!=NULL;p=p->next){
         // Switch to chosen process.  It is the process's job
@@ -826,6 +800,31 @@ scheduler(void)
         // Process is done running for now.
         // It should have changed its p->state before coming back.
         c->proc = 0;
+      }
+    }
+       if(ticks >= ptable.PromoteAtTime){ //Promotion
+      ptable.PromoteAtTime = ticks + TICKS_TO_PROMOTE;
+      //Promoting RUNNING list
+      for(p=ptable.list[RUNNING].head;p!=NULL;p=p->next){
+        if(p->priority < MAXPRIO) p->priority++;
+      }
+
+      //Promoting RUNNABLE (ready) list
+      for (i = 0; i <= MAXPRIO; i++) {
+        for(p=ptable.ready[i].head;p!=NULL;p=p->next){
+          if(p->priority < MAXPRIO) {
+            if(stateListRemove(&ptable.ready[p->priority], p)==-1){
+              panic("failed to remove from ready list in scheduler P4()");
+            }
+            p->priority++;
+            stateListAdd(&ptable.ready[p->priority],p);          
+          }       
+        }
+      }
+
+      //Promoting SLEEPING list
+      for(p=ptable.list[SLEEPING].head;p!=NULL;p=p->next){
+	      if(p->priority < MAXPRIO) p->priority++;
       }
     }
     release(&ptable.lock);
