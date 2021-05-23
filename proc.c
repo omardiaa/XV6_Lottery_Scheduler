@@ -332,6 +332,10 @@ fork(void)
   np->uid = curproc->uid;
   np->gid = curproc->gid;
 
+#ifdef CS333_P4
+  np->priority = MAXPRIO;
+#endif
+
   pid = np->pid;
 
   acquire(&ptable.lock);
