@@ -31,6 +31,7 @@
 
 #ifdef CS333_P4
 #define MAXPRIO 5
+#define TICKS_TO_PROMOTE 100
 #endif
 
 #endif  // PDX_INCLUDE

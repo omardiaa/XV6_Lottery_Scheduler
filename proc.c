@@ -43,7 +43,7 @@ static struct {
  #endif
  #ifdef CS333_P4
  struct ptrs ready[MAXPRIO+1];
- uint PromoteAtTime ;
+ uint PromoteAtTime;
  #endif
 } ptable;
 
@@ -237,6 +237,7 @@ userinit(void)
 
 #ifdef CS333_P4
   p->priority = MAXPRIO;
+  ptable.PromoteAtTime = ticks + TICKS_TO_PROMOTE;
 #endif
 
 
@@ -253,7 +254,7 @@ userinit(void)
 #endif
   p->state = RUNNABLE;
 #ifdef CS333_P4
-  stateListAdd(&ptable.ready[MAXPRIO],p);
+  stateListAdd(&ptable.ready[p->priority],p);
 #elif CS333_P3
   stateListAdd(&ptable.list[RUNNABLE],p);
 #endif
@@ -343,7 +344,7 @@ fork(void)
   np->state = RUNNABLE;
   
 #ifdef CS333_P4
-  stateListAdd(&ptable.ready[MAXPRIO], np);
+  stateListAdd(&ptable.ready[np->priority], np);
 #elif CS333_P3
   stateListAdd(&ptable.list[RUNNABLE], np);
 #endif
@@ -395,7 +396,7 @@ exit(void)
       p->parent = initproc;
     }
   }
-  for(p=ptable.ready[MAXPRIO].head;p!=NULL;p=p->next){
+  for(p=ptable.ready[p->priority].head;p!=NULL;p=p->next){
     if(p->parent == curproc){
       p->parent = initproc;
     }
@@ -573,7 +574,7 @@ wait(void)
         continue;
       havekids = 1;
     }
-    for(p=ptable.ready[MAXPRIO].head;p!=NULL;p=p->next){
+    for(p=ptable.ready[p->priority].head;p!=NULL;p=p->next){
       if(p->parent != curproc)
         continue;
       havekids = 1;
@@ -760,7 +761,7 @@ scheduler(void)
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
     
-    for(p=ptable.ready[MAXPRIO].head;p!=NULL;p=p->next){
+    for(p=ptable.ready[p->priority].head;p!=NULL;p=p->next){
       // Switch to chosen process.  It is the process's job
       // to release ptable.lock and then reacquire it
       // before jumping back to us.
@@ -770,7 +771,7 @@ scheduler(void)
       c->proc = p;
       switchuvm(p);
       
-      if(stateListRemove(&ptable.ready[MAXPRIO], p)==-1){
+      if(stateListRemove(&ptable.ready[p->priority], p)==-1){
         panic("failed to remove process we will run from ready list in scheduler()");
       }
       p->state = RUNNING;
@@ -957,7 +958,7 @@ yield(void)
   assertState(curproc, RUNNING, __FUNCTION__, __LINE__);
 
   curproc->state = RUNNABLE;
-  stateListAdd(&ptable.ready[MAXPRIO],curproc);
+  stateListAdd(&ptable.ready[curproc->priority],curproc);
   
   sched();
   release(&ptable.lock);
@@ -1117,7 +1118,7 @@ wakeup1(void *chan)
       } 
       assertState(p, SLEEPING, __FUNCTION__, __LINE__);
       p->state = RUNNABLE;
-      stateListAdd(&ptable.ready[MAXPRIO],p);
+      stateListAdd(&ptable.ready[p->priority],p);
 
     }
     p=nextproc;
@@ -1194,12 +1195,12 @@ kill(int pid)
       }
       assertState(p, SLEEPING, __FUNCTION__, __LINE__);
       p->state = RUNNABLE;
-      stateListAdd(&ptable.ready[MAXPRIO],p);
+      stateListAdd(&ptable.ready[p->priority],p);
       release(&ptable.lock);
       return 0;
     }
   }
-  for(p=ptable.ready[MAXPRIO].head;p!=NULL;p=p->next){
+  for(p=ptable.ready[p->priority].head;p!=NULL;p=p->next){
     if(p->pid == pid){
       p->killed = 1;
       release(&ptable.lock);
