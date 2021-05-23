@@ -61,6 +61,7 @@ static void checkProcs(const char *, const char *, int);
 #endif
 #endif // CS333_P3
 #ifdef CS333_P4
+static void updateBudget(struct proc *);
 static void printReadyLists();
 static void printReadyList(struct proc *, int);
 #endif // CS333_P4
@@ -334,6 +335,7 @@ fork(void)
 
 #ifdef CS333_P4
   np->priority = MAXPRIO;
+  np->budget = DEFAULT_BUDGET;
 #endif
 
   pid = np->pid;
@@ -969,6 +971,8 @@ yield(void)
   }
   assertState(curproc, RUNNING, __FUNCTION__, __LINE__);
 
+  updateBudget(curproc);
+
   curproc->state = RUNNABLE;
   stateListAdd(&ptable.ready[curproc->priority],curproc);
   
@@ -1032,8 +1036,49 @@ forkret(void)
 
 // Atomically release lock and sleep on chan.
 // Reacquires lock when awakened.
-#ifdef CS333_P3
+#ifdef CS333_P4
+void
+sleep(void *chan, struct spinlock *lk)
+{
+  struct proc *p = myproc();
 
+  if(p == 0)
+    panic("sleep");
+
+  // Must acquire ptable.lock in order to
+  // change p->state and then call sched.
+  // Once we hold ptable.lock, we can be
+  // guaranteed that we won't miss any wakeup
+  // (wakeup runs with ptable.lock locked),
+  // so it's okay to release lk.
+  if(lk != &ptable.lock){  //DOC: sleeplock0
+    acquire(&ptable.lock);  //DOC: sleeplock1
+    if (lk) release(lk);
+  }
+  // Go to sleep.
+  p->chan = chan;
+  if (stateListRemove(&ptable.list[RUNNING], p) == -1) {
+    panic("failed to remove from RUNNING list in sleep()");
+  }
+  assertState(p, RUNNING, __FUNCTION__, __LINE__);
+
+  updateBudget(p);
+
+  p->state = SLEEPING;
+  stateListAdd(&ptable.list[SLEEPING], p);
+
+  sched();
+
+  // Tidy up.
+  p->chan = 0;
+
+  // Reacquire original lock.
+  if(lk != &ptable.lock){  //DOC: sleeplock2
+    release(&ptable.lock);
+    if (lk) acquire(lk);
+  }
+}
+#elif CS333_P3
 void
 sleep(void *chan, struct spinlock *lk)
 {
@@ -1191,7 +1236,7 @@ kill(int pid)
 {
   struct proc *p;
   int i;
-  
+
   acquire(&ptable.lock);
   for(p=ptable.list[EMBRYO].head;p!=NULL;p=p->next){
     if(p->pid == pid){
@@ -1387,7 +1432,6 @@ procdump(void)
     else
       state = "???";
 
-    // see TODOs above this function
     // P2 and P3 are identical and the P4 change is minor
 #if defined(CS333_P2)
     procdumpP2P3P4(p, state);
@@ -1695,6 +1739,16 @@ printReadyLists()
   }
 }
 
+void 
+updateBudget(struct proc *p)
+{
+  p->budget = p->budget - (ticks-p->cpu_ticks_in);
+  if(p->budget <= 0) //Demotion
+  {
+   if(p->priority > 0) p->priority--;
+   p->budget = DEFAULT_BUDGET;
+  }
+}
 #endif // CS333_P4
 
 #ifdef DEBUG
