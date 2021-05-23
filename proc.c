@@ -776,9 +776,9 @@ scheduler(void)
 
     if(ticks >= ptable.PromoteAtTime){ //Promotion
       ptable.PromoteAtTime = ticks + TICKS_TO_PROMOTE;
-      
+      cprintf("Promoting\n");
       //Promoting RUNNING list
-      for(p=ptable.list[RUNNABLE].head;p!=NULL;p=p->next){
+      for(p=ptable.list[RUNNING].head;p!=NULL;p=p->next){
         if(p->priority < MAXPRIO) p->priority++;
       }
 
@@ -801,7 +801,7 @@ scheduler(void)
       }
     }
 
-    for (i = 0; i <= MAXPRIO; i++) {
+    for (i = MAXPRIO; i >= 0; i--) {
       for(p=ptable.ready[i].head;p!=NULL;p=p->next){
         // Switch to chosen process.  It is the process's job
         // to release ptable.lock and then reacquire it
