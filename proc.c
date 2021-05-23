@@ -777,22 +777,22 @@ scheduler(void)
     if(ticks >= ptable.PromoteAtTime){ //Promotion
       ptable.PromoteAtTime = ticks + TICKS_TO_PROMOTE;
       
-      //Promoting RUNNING list
-      for(p=ptable.list[RUNNABLE].head;p!=NULL;p=p->next){
-        if(p->priority < MAXPRIO) p->priority++;
-      }
+      // //Promoting RUNNING list
+      // for(p=ptable.list[RUNNABLE].head;p!=NULL;p=p->next){
+      //   if(p->priority < MAXPRIO) p->priority++;
+      // }
 
-      //Promoting RUNNABLE (ready) list
-      for (i = 0; i <= MAXPRIO; i++) {
-        for(p=ptable.ready[i].head;p!=NULL;p=p->next){
-          if(p->priority < MAXPRIO) p->priority++;        
-        }
-      }
+      // //Promoting RUNNABLE (ready) list
+      // for (i = 0; i <= MAXPRIO; i++) {
+      //   for(p=ptable.ready[i].head;p!=NULL;p=p->next){
+      //     if(p->priority < MAXPRIO) p->priority++;        
+      //   }
+      // }
 
-      //Promoting SLEEPING list
-      for(p=ptable.list[SLEEPING].head;p!=NULL;p=p->next){
-        if(p->priority < MAXPRIO) p->priority++;
-      }
+      // //Promoting SLEEPING list
+      // for(p=ptable.list[SLEEPING].head;p!=NULL;p=p->next){
+      //   if(p->priority < MAXPRIO) p->priority++;
+      // }
     }
     for (i = 0; i <= MAXPRIO; i++) {
       for(p=ptable.ready[i].head;p!=NULL;p=p->next){
