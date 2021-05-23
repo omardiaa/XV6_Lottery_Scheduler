@@ -776,7 +776,6 @@ scheduler(void)
 
     if(ticks >= ptable.PromoteAtTime){ //Promotion
       ptable.PromoteAtTime = ticks + TICKS_TO_PROMOTE;
-      cprintf("Promoting\n");
       //Promoting RUNNING list
       for(p=ptable.list[RUNNING].head;p!=NULL;p=p->next){
         if(p->priority < MAXPRIO) p->priority++;
@@ -1002,6 +1001,7 @@ yield(void)
   updateBudget(curproc);
 
   curproc->state = RUNNABLE;
+ // cprintf("Moving to RUNNABLE with priority %d\n", curproc->priority);
   stateListAdd(&ptable.ready[curproc->priority],curproc);
   
   sched();

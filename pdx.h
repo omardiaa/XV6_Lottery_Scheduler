@@ -31,7 +31,7 @@
 
 #ifdef CS333_P4
 #define MAXPRIO 10
-#define TICKS_TO_PROMOTE 1000000
+#define TICKS_TO_PROMOTE 1000
 #define DEFAULT_BUDGET 100
 #endif
 

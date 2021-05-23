@@ -14,8 +14,7 @@ extern struct cpu cpus[NCPU];
 extern int ncpu;
 
 //PAGEBREAK: 17
-// Saved registers for kernel context switches.
-// Don't need to save all the segment registers (%cs, etc),
+// Saved registers for kernel context switches.// Don't need to save all the segment registers (%cs, etc),
 // because they are constant across kernel contexts.
 // Don't need to save %eax, %ecx, %edx, because the
 // x86 convention is that the caller has saved them.
@@ -59,7 +58,7 @@ struct proc {
 #endif
 #ifdef CS333_P4
   uint priority;
-  uint budget;
+  int budget;
 #endif
 };
 
