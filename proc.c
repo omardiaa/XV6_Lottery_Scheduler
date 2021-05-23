@@ -363,6 +363,7 @@ exit(void)
   struct proc *curproc = myproc();
   struct proc *p;
   int fd;
+  int i;
 
   if(curproc == initproc)
     panic("init exiting");
@@ -560,7 +561,7 @@ wait(void)
   int havekids;
   uint pid;
   struct proc *curproc = myproc();
-
+  int i;
   acquire(&ptable.lock);
   for(;;){
     // Scan through table looking for exited children.
@@ -751,6 +752,8 @@ scheduler(void)
   struct proc *p;
   struct cpu *c = mycpu();
   c->proc = 0;
+  int i;
+
 #ifdef PDX_XV6
   int idle;  // for checking if processor is idle
 #endif // PDX_XV6
@@ -1183,7 +1186,8 @@ int
 kill(int pid)
 {
   struct proc *p;
-
+  int i;
+  
   acquire(&ptable.lock);
   for(p=ptable.list[EMBRYO].head;p!=NULL;p=p->next){
     if(p->pid == pid){
