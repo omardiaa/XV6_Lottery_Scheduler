@@ -780,25 +780,25 @@ scheduler(void)
       //Promoting RUNNING list
       for(p=ptable.list[RUNNABLE].head;p!=NULL;p=p->next){
         if(p->priority < MAXPRIO) p->priority++;
-        //cprintf("%s priority = %d\n",p->name,p->priority);
       }
 
       //Promoting RUNNABLE (ready) list
       for (i = 0; i <= MAXPRIO; i++) {
         for(p=ptable.ready[i].head;p!=NULL;p=p->next){
-          if(p->priority <MAXPRIO)
-		  p->priority++;
-		cprintf("Cur Proc: %s => %d\n", p->name,p->priority);   
-	  //if(p->priority < MAXPRIO) p->priority++;        
+          if(p->priority < MAXPRIO) {
+            if(stateListRemove(&ptable.ready[p->priority], p)==-1){
+              panic("failed to remove from ready list in scheduler P4()");
+            }
+            p->priority++;
+            stateListAdd(&ptable.ready[p->priority],p);          
+          }       
         }
       }
 
       //Promoting SLEEPING list
       for(p=ptable.list[SLEEPING].head;p!=NULL;p=p->next){
-	if(p->priority < MAXPRIO) p->priority++;
-	//if(p->priority == 3)
-	  //     	cprintf("%s priority = %d\n", p->name, p->priority);
-      }
+	      if(p->priority < MAXPRIO) p->priority++;
+	    }
     }
 
     for (i = 0; i <= MAXPRIO; i++) {
