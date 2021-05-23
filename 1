@@ -780,27 +780,22 @@ scheduler(void)
       //Promoting RUNNING list
       for(p=ptable.list[RUNNABLE].head;p!=NULL;p=p->next){
         if(p->priority < MAXPRIO) p->priority++;
-        //cprintf("%s priority = %d\n",p->name,p->priority);
+        if(p->priority == 3) cprintf("%s priority = %d\n",p->name,p->priority);
       }
 
-      //Promoting RUNNABLE (ready) list
-      for (i = 0; i <= MAXPRIO; i++) {
-        for(p=ptable.ready[i].head;p!=NULL;p=p->next){
-          if(p->priority <MAXPRIO)
-		  p->priority++;
-		cprintf("Cur Proc: %s => %d\n", p->name,p->priority);   
-	  //if(p->priority < MAXPRIO) p->priority++;        
-        }
-      }
+      // //Promoting RUNNABLE (ready) list
+      // for (i = 0; i <= MAXPRIO; i++) {
+      //   for(p=ptable.ready[i].head;p!=NULL;p=p->next){
+      //     if(p->priority < MAXPRIO) p->priority++;        
+      //   }
+      // }
 
       //Promoting SLEEPING list
       for(p=ptable.list[SLEEPING].head;p!=NULL;p=p->next){
-	if(p->priority < MAXPRIO) p->priority++;
-	//if(p->priority == 3)
-	  //     	cprintf("%s priority = %d\n", p->name, p->priority);
+        if(p->priority < MAXPRIO) p->priority++;
+	if(p->priority == 3) cprintf("%s priority = %d\n", p->name, p->priority);
       }
     }
-
     for (i = 0; i <= MAXPRIO; i++) {
       for(p=ptable.ready[i].head;p!=NULL;p=p->next){
         // Switch to chosen process.  It is the process's job
