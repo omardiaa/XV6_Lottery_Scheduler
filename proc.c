@@ -396,9 +396,11 @@ exit(void)
       p->parent = initproc;
     }
   }
-  for(p=ptable.ready[p->priority].head;p!=NULL;p=p->next){
-    if(p->parent == curproc){
-      p->parent = initproc;
+  for (i = 0; i <= MAXPRIO; i++) {
+    for(p=ptable.ready[i].head;p!=NULL;p=p->next){
+      if(p->parent == curproc){
+        p->parent = initproc;
+      }
     }
   }
   for(p=ptable.list[RUNNING].head;p!=NULL;p=p->next){
@@ -574,10 +576,12 @@ wait(void)
         continue;
       havekids = 1;
     }
-    for(p=ptable.ready[p->priority].head;p!=NULL;p=p->next){
-      if(p->parent != curproc)
-        continue;
-      havekids = 1;
+    for (i = 0; i <= MAXPRIO; i++) {
+      for(p=ptable.ready[i].head;p!=NULL;p=p->next){
+        if(p->parent != curproc)
+          continue;
+        havekids = 1;
+      }
     }
     for(p=ptable.list[RUNNING].head;p!=NULL;p=p->next){
       if(p->parent != curproc)
@@ -760,32 +764,33 @@ scheduler(void)
 #endif // PDX_XV6
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
-    
-    for(p=ptable.ready[p->priority].head;p!=NULL;p=p->next){
-      // Switch to chosen process.  It is the process's job
-      // to release ptable.lock and then reacquire it
-      // before jumping back to us.
+    for (i = 0; i <= MAXPRIO; i++) {
+      for(p=ptable.ready[i].head;p!=NULL;p=p->next){
+        // Switch to chosen process.  It is the process's job
+        // to release ptable.lock and then reacquire it
+        // before jumping back to us.
 #ifdef PDX_XV6
-      idle = 0;  // not idle this timeslice
+        idle = 0;  // not idle this timeslice
 #endif // PDX_XV6
-      c->proc = p;
-      switchuvm(p);
-      
-      if(stateListRemove(&ptable.ready[p->priority], p)==-1){
-        panic("failed to remove process we will run from ready list in scheduler()");
-      }
-      p->state = RUNNING;
-      stateListAdd(&ptable.list[RUNNING], p);
+        c->proc = p;
+        switchuvm(p);
+        
+        if(stateListRemove(&ptable.ready[p->priority], p)==-1){
+          panic("failed to remove process we will run from ready list in scheduler()");
+        }
+        p->state = RUNNING;
+        stateListAdd(&ptable.list[RUNNING], p);
 
 #ifdef CS333_P2
-      p->cpu_ticks_in=ticks;
+        p->cpu_ticks_in=ticks;
 #endif
-      swtch(&(c->scheduler), p->context);
-      switchkvm();
+        swtch(&(c->scheduler), p->context);
+        switchkvm();
 
-      // Process is done running for now.
-      // It should have changed its p->state before coming back.
-      c->proc = 0;
+        // Process is done running for now.
+        // It should have changed its p->state before coming back.
+        c->proc = 0;
+      }
     }
     release(&ptable.lock);
 #ifdef PDX_XV6
@@ -1200,11 +1205,13 @@ kill(int pid)
       return 0;
     }
   }
-  for(p=ptable.ready[p->priority].head;p!=NULL;p=p->next){
-    if(p->pid == pid){
-      p->killed = 1;
-      release(&ptable.lock);
-      return 0;
+  for (i = 0; i <= MAXPRIO; i++) {
+    for(p=ptable.ready[i].head;p!=NULL;p=p->next){
+      if(p->pid == pid){
+        p->killed = 1;
+        release(&ptable.lock);
+        return 0;
+      }
     }
   }
   for(p=ptable.list[RUNNING].head;p!=NULL;p=p->next){
