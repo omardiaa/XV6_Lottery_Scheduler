@@ -1748,9 +1748,14 @@ setpriority(int pid, int priority)
     for(p=ptable.ready[i].head;p!=NULL;p=p->next){
       if(p->pid == pid)
       {
-        //TODO: remove from readylist of this priority
+        acquire(&ptable.lock);  
+        if(stateListRemove(&ptable.ready[p->priority], p)==-1){
+          panic("failed to remove process we will run from ready list in scheduler()");
+        }
         p->priority = priority;
-        //TODO: add to readylist of this priority
+        stateListAdd(&ptable.ready[p->priority],p);
+        release(&ptable.lock);  
+        
         return 0;
       }
     }
