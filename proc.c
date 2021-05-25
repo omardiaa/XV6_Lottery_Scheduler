@@ -1748,7 +1748,9 @@ setpriority(int pid, int priority)
     for(p=ptable.ready[i].head;p!=NULL;p=p->next){
       if(p->pid == pid)
       {
+        //TODO: remove from readylist of this priority
         p->priority = priority;
+        //TODO: add to readylist of this priority
         return 0;
       }
     }
