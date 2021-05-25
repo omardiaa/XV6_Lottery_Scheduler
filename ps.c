@@ -27,7 +27,7 @@ main(int argc, char *argv[])
     exit();
   }
   
-  printf(1,"\nPID\tName         UID\tGID\tPPID\tElapsed\tCPU\tState\tSize\n");
+  printf(1,"\nPID\tName         UID\tGID\tPPID\tPrio\tElapsed\tCPU\tState\tSize\n");
   for(int i=0;i<table_size;i++){
     int s_elapsed_ticks = table[i].elapsed_ticks/1000;
     int ms_elapsed_ticks = table[i].elapsed_ticks%1000;
@@ -41,6 +41,7 @@ main(int argc, char *argv[])
    table[i].uid,
    table[i].gid,
    table[i].ppid,
+   table[i].priority,
    s_elapsed_ticks
    );
    if (ms_elapsed_ticks < 10)  printf(1,"0");

@@ -1403,12 +1403,13 @@ procdumpP2P3P4(struct proc *p, char *state_string)
   int s_cpu_total_ticks =(p->cpu_ticks_total)/1000;
   int ms_cpu_total_ticks =(p->cpu_ticks_total)%1000;
 
-  cprintf("%d\t%s\t     %d\t\t%d\t%d\t%d.",
+  cprintf("%d\t%s\t     %d\t\t%d\t%d\t%d\t%d.",
   p->pid,
    p->name,
    p->uid,
    p->gid,
    p->parent==NULL?p->pid:p->parent->pid,
+   p->priority,
    s_start_ticks
    );
   if (ms_start_ticks < 10)  cprintf("0");
