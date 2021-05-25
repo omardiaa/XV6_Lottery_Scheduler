@@ -35,7 +35,7 @@ main(int argc, char *argv[])
     int s_cpu_total_ticks =table[i].CPU_total_ticks/1000;
     int ms_cpu_total_ticks =table[i].CPU_total_ticks%1000;
  
-   printf(1,"%d\t%s\t     %d\t\t%d\t%d\t%d.",
+   printf(1,"%d\t%s\t     %d\t\t%d\t%d\t%d\t%d.",
    table[i].pid,
    table[i].name,
    table[i].uid,
