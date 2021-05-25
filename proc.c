@@ -1806,7 +1806,7 @@ printReadyList(struct proc *p, int prio)
 
   int count = 0;
   do {
-    cprintf("%d", p->pid);
+    cprintf("(%d, %d) ", p->pid, p->budget);
     if(p->priority != prio) {
       cprintf("\nlist invariant failed: process %d has prio %d but is on runnable list %d\n",
           p->pid, p->priority, prio);
@@ -1824,9 +1824,9 @@ printReadyLists()
   struct proc *p;
 
   cprintf("Ready List Processes:\n");
-  for (int i=0; i<=MAXPRIO; i++) {
+  for (int i=MAXPRIO; i>=0; i--) {
     p = ptable.ready[i].head;
-    cprintf("Prio %d: ", i);
+    cprintf("%d-: ", i);
     printReadyList(p, i);
   }
 }
