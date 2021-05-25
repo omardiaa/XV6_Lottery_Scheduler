@@ -1733,22 +1733,22 @@ sys_setpriority(int pid, int priority)
   for(p=ptable.list[EMBRYO].head;p!=NULL;p=p->next){
     if(p->pid == pid)
     {
-      pid->priority = priority;
+      p->priority = priority;
       return 0;
     }
   }
   for(p=ptable.list[SLEEPING].head;p!=NULL;p=p->next){
     if(p->pid == pid)
     {
-      pid->priority = priority;
+      p->priority = priority;
       return 0;
     }
   }
-  for (i = 0; i <= MAXPRIO; i++) {
+  for (int i = 0; i <= MAXPRIO; i++) {
     for(p=ptable.ready[i].head;p!=NULL;p=p->next){
       if(p->pid == pid)
       {
-        pid->priority = priority;
+        p->priority = priority;
         return 0;
       }
     }
@@ -1756,14 +1756,14 @@ sys_setpriority(int pid, int priority)
   for(p=ptable.list[RUNNING].head;p!=NULL;p=p->next){
     if(p->pid == pid)
     {
-      pid->priority = priority;
+      p->priority = priority;
       return 0;
     }
   }
   for(p=ptable.list[ZOMBIE].head;p!=NULL;p=p->next){
     if(p->pid == pid)
     {
-      pid->priority = priority;
+      p->priority = priority;
       return 0;
     }
   }
@@ -1774,21 +1774,21 @@ sys_getpriority(int pid)
 {
   struct proc *p;
   for(p=ptable.list[EMBRYO].head;p!=NULL;p=p->next){
-    if(p->pid == pid)return pid->priority;
+    if(p->pid == pid)return p->priority;
   }
   for(p=ptable.list[SLEEPING].head;p!=NULL;p=p->next){
-    if(p->pid == pid)return pid->priority;
+    if(p->pid == pid)return p->priority;
   }
-  for (i = 0; i <= MAXPRIO; i++) {
+  for (int i = 0; i <= MAXPRIO; i++) {
     for(p=ptable.ready[i].head;p!=NULL;p=p->next){
-      if(p->pid == pid)return pid->priority;
+      if(p->pid == pid)return p->priority;
     }
   }
   for(p=ptable.list[RUNNING].head;p!=NULL;p=p->next){
-    if(p->pid == pid)return pid->priority;
+    if(p->pid == pid)return p->priority;
   }
   for(p=ptable.list[ZOMBIE].head;p!=NULL;p=p->next){
-    if(p->pid == pid)return pid->priority;
+    if(p->pid == pid)return p->priority;
   }
   return -1; //invalid pid
 }
