@@ -1492,6 +1492,7 @@ getprocs(uint max, struct uproc* table){
       table->uid = p->uid;
       table->gid = p->gid;
       table->ppid = p->parent==NULL?p->pid:p->parent->pid;
+      table->priority = p->priority;
       table->elapsed_ticks = ticks - p->start_ticks;
       table->CPU_total_ticks = p->cpu_ticks_total;
       safestrcpy(table->state,states[p->state],STRMAX);
