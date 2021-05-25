@@ -182,7 +182,7 @@ sys_getpriority(void){
   if(argint(0, &pid) < 0)
     return -1;
 
-  return setpriority(pid, priority);
+  return getpriority(pid);
 }
 
 #endif
