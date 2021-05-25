@@ -1727,7 +1727,7 @@ printListStats()
 
 #ifdef CS333_P4
 int
-sys_setpriority(int pid, int priority)
+setpriority(int pid, int priority)
 {
   struct proc *p;
   for(p=ptable.list[EMBRYO].head;p!=NULL;p=p->next){
@@ -1770,7 +1770,7 @@ sys_setpriority(int pid, int priority)
   return -1;
 }
 int
-sys_getpriority(int pid)
+getpriority(int pid)
 {
   struct proc *p;
   for(p=ptable.list[EMBRYO].head;p!=NULL;p=p->next){
