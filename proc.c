@@ -1730,17 +1730,11 @@ int
 setpriority(int pid, int priority)
 {
   struct proc *p;
-  for(p=ptable.list[EMBRYO].head;p!=NULL;p=p->next){
-    if(p->pid == pid)
-    {
-      p->priority = priority;
-      return 0;
-    }
-  }
   for(p=ptable.list[SLEEPING].head;p!=NULL;p=p->next){
     if(p->pid == pid)
     {
       p->priority = priority;
+      p->budget = DEFAULT_BUDGET;
       return 0;
     }
   }
@@ -1753,6 +1747,7 @@ setpriority(int pid, int priority)
           panic("failed to remove process we will run from ready list in scheduler()");
         }
         p->priority = priority;
+        p->budget = DEFAULT_BUDGET;
         stateListAdd(&ptable.ready[p->priority],p);
         release(&ptable.lock);  
         
@@ -1764,13 +1759,7 @@ setpriority(int pid, int priority)
     if(p->pid == pid)
     {
       p->priority = priority;
-      return 0;
-    }
-  }
-  for(p=ptable.list[ZOMBIE].head;p!=NULL;p=p->next){
-    if(p->pid == pid)
-    {
-      p->priority = priority;
+      p->budget = DEFAULT_BUDGET;
       return 0;
     }
   }
