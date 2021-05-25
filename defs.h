@@ -133,6 +133,10 @@ void            printFreeList(void);
 void            printList(int);
 void            printListStats(void);
 #endif // CS333_P3
+#ifdef CS333_P4
+int             setpriority(int pid, int priority);
+int             getpriority(int pid);
+#endif
 
 // swtch.S
 void            swtch(struct context**, struct context*);

@@ -1726,6 +1726,72 @@ printListStats()
 #endif // CS333_P3
 
 #ifdef CS333_P4
+int
+sys_setpriority(int pid, int priority)
+{
+  struct proc *p;
+  for(p=ptable.list[EMBRYO].head;p!=NULL;p=p->next){
+    if(p->pid == pid)
+    {
+      pid->priority = priority;
+      return 0;
+    }
+  }
+  for(p=ptable.list[SLEEPING].head;p!=NULL;p=p->next){
+    if(p->pid == pid)
+    {
+      pid->priority = priority;
+      return 0;
+    }
+  }
+  for (i = 0; i <= MAXPRIO; i++) {
+    for(p=ptable.ready[i].head;p!=NULL;p=p->next){
+      if(p->pid == pid)
+      {
+        pid->priority = priority;
+        return 0;
+      }
+    }
+  }
+  for(p=ptable.list[RUNNING].head;p!=NULL;p=p->next){
+    if(p->pid == pid)
+    {
+      pid->priority = priority;
+      return 0;
+    }
+  }
+  for(p=ptable.list[ZOMBIE].head;p!=NULL;p=p->next){
+    if(p->pid == pid)
+    {
+      pid->priority = priority;
+      return 0;
+    }
+  }
+  return -1;
+}
+int
+sys_getpriority(int pid)
+{
+  struct proc *p;
+  for(p=ptable.list[EMBRYO].head;p!=NULL;p=p->next){
+    if(p->pid == pid)return pid->priority;
+  }
+  for(p=ptable.list[SLEEPING].head;p!=NULL;p=p->next){
+    if(p->pid == pid)return pid->priority;
+  }
+  for (i = 0; i <= MAXPRIO; i++) {
+    for(p=ptable.ready[i].head;p!=NULL;p=p->next){
+      if(p->pid == pid)return pid->priority;
+    }
+  }
+  for(p=ptable.list[RUNNING].head;p!=NULL;p=p->next){
+    if(p->pid == pid)return pid->priority;
+  }
+  for(p=ptable.list[ZOMBIE].head;p!=NULL;p=p->next){
+    if(p->pid == pid)return pid->priority;
+  }
+  return -1; //invalid pid
+}
 void
 printReadyList(struct proc *p, int prio)
 {
