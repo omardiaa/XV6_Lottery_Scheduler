@@ -119,6 +119,9 @@ checkPriority(void)
 int
 main(int argc, char* argv[])
 {
+
+ // int prio = getpriority(2);
+ // printf(1, "Priority of pid 2 = %d\n", prio);
   if (MAXPRIO == 0) {
     printf(1, "MAXPRIO is 0. Change MAXPRIO and try again\n");
     exit();
@@ -127,5 +130,6 @@ main(int argc, char* argv[])
   checkPriority();
 
   testPromotion();
+  
   exit();
 }

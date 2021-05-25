@@ -1794,6 +1794,7 @@ getpriority(int pid)
   }
   return -1; //invalid pid
 }
+
 void
 printReadyList(struct proc *p, int prio)
 {
