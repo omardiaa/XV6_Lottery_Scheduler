@@ -997,8 +997,10 @@ yield(void)
   }
   assertState(curproc, RUNNING, __FUNCTION__, __LINE__);
 
+  //cprintf("Budget before: %d\n", curproc->budget);
   updateBudget(curproc);
-
+  //cprintf("Moving from RUNNING to RUNNABLE. New Budget = %d\n",curproc->budget);
+  
   curproc->state = RUNNABLE;
  // cprintf("Moving to RUNNABLE with priority %d\n", curproc->priority);
   stateListAdd(&ptable.ready[curproc->priority],curproc);
@@ -1089,7 +1091,9 @@ sleep(void *chan, struct spinlock *lk)
   }
   assertState(p, RUNNING, __FUNCTION__, __LINE__);
 
+  //cprintf("Budget Before (Sleeping): %d\n", p->budget);
   updateBudget(p);
+  //cprintf("Moving from RUNNING to SLEEPING with budget = %d\n", p->budget);
 
   p->state = SLEEPING;
   stateListAdd(&ptable.list[SLEEPING], p);
