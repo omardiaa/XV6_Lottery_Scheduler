@@ -759,6 +759,7 @@ scheduler(void)
   struct cpu *c = mycpu();
   c->proc = 0;
   int i;
+  bool stopExecuting = false;
 
 #ifdef PDX_XV6
   int idle;  // for checking if processor is idle
@@ -775,10 +776,12 @@ scheduler(void)
     acquire(&ptable.lock);
 
     for (i = MAXPRIO; i >= 0; i--) {
+      if(stopExecuting) break;
       for(p=ptable.ready[i].head;p!=NULL;p=p->next){
         // Switch to chosen process.  It is the process's job
         // to release ptable.lock and then reacquire it
         // before jumping back to us.
+        stopExecuting=true;
 #ifdef PDX_XV6
         idle = 0;  // not idle this timeslice
 #endif // PDX_XV6
