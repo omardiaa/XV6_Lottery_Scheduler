@@ -759,7 +759,6 @@ scheduler(void)
   struct cpu *c = mycpu();
   c->proc = 0;
   int i;
-  bool stopExecuting = false;
 
 #ifdef PDX_XV6
   int idle;  // for checking if processor is idle
@@ -776,8 +775,9 @@ scheduler(void)
     acquire(&ptable.lock);
 
     for (i = MAXPRIO; i >= 0; i--) {
-      if(stopExecuting) break;
-      for(p=ptable.ready[i].head;p!=NULL;p=p->next){
+      p=ptable.ready[i].head;
+      if(p==NULL) continue;
+
         // Switch to chosen process.  It is the process's job
         // to release ptable.lock and then reacquire it
         // before jumping back to us.
@@ -803,7 +803,7 @@ scheduler(void)
         // Process is done running for now.
         // It should have changed its p->state before coming back.
         c->proc = 0;
-      }
+        break;
     }
        if(ticks >= ptable.PromoteAtTime){ //Promotion
       ptable.PromoteAtTime = ticks + TICKS_TO_PROMOTE;
