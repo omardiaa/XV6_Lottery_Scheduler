@@ -9,9 +9,9 @@ main(int argc, char *argv[])
 
   int rc = getpriority(atoi(argv[1]));
   if(rc == -1)
-	  printf(0, "An error has occurred while getting priority\n");
+    printf(0, "An error has occurred while getting priority\n");
   else 
-	  printf(1, "Priority is: %d\n", rc);
+    printf(1, "Priority is: %d\n", rc);
   exit();
 }
 #endif

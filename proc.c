@@ -826,7 +826,7 @@ scheduler(void)
 
       //Promoting SLEEPING list
       for(p=ptable.list[SLEEPING].head;p!=NULL;p=p->next){
-	      if(p->priority < MAXPRIO) p->priority++;
+        if(p->priority < MAXPRIO) p->priority++;
       }
     }
     release(&ptable.lock);
@@ -1750,7 +1750,7 @@ setpriority(int pid, int priority)
     for(p=ptable.ready[i].head;p!=NULL;p=p->next){
       if(p->pid == pid)
       {
-	  if(p->priority != priority){
+      if(p->priority != priority){
           acquire(&ptable.lock);  
           if(stateListRemove(&ptable.ready[p->priority], p)==-1){
             panic("failed to remove process we will run from ready list in scheduler()");
@@ -1759,7 +1759,7 @@ setpriority(int pid, int priority)
           p->budget = DEFAULT_BUDGET;
           stateListAdd(&ptable.ready[p->priority],p);
           release(&ptable.lock);  
-	}
+  }
         return 0;
       }
     }
