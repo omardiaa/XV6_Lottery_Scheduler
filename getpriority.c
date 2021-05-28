@@ -5,9 +5,9 @@
 int 
 main(int argc, char *argv[])
 {
-  if(argc<2)cprintf(0, "Please set pid\n");
+  if(argc<2)printf(0, "Please set pid\n");
 
-  int rc = getpriority(argv[1]);
+  int rc = getpriority(atoi(argv[1]));
   if(rc == -1)
 	  printf(0, "An error has occurred while getting priority\n");
   else 

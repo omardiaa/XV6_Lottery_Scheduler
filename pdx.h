@@ -30,9 +30,9 @@
 #define max(a, b) ((a) > (b) ? (a) : (b))
 
 #ifdef CS333_P4
-#define MAXPRIO 6
+#define MAXPRIO 2
 #define TICKS_TO_PROMOTE 200
-#define DEFAULT_BUDGET 400
+#define DEFAULT_BUDGET 500
 #endif
 
 #endif  // PDX_INCLUDE

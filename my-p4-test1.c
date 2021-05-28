@@ -5,12 +5,12 @@
 int 
 main(void)
 {
-  
-  int rc = setpriority(1, 5);
+  int pid = getpid();
+  int rc = getpriority(pid);
   if(rc == -1)
 	  printf(0, "An error has occurred while setting priority\n");
   else 
-	  printf(1, "Priority set successfully\n");
+	  printf(1, "Priority of pid %d is %d\n", pid, rc);
   exit();
 }
 #endif
