@@ -781,7 +781,6 @@ scheduler(void)
         // Switch to chosen process.  It is the process's job
         // to release ptable.lock and then reacquire it
         // before jumping back to us.
-        stopExecuting=true;
 #ifdef PDX_XV6
         idle = 0;  // not idle this timeslice
 #endif // PDX_XV6
